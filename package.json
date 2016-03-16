@@ -9,9 +9,11 @@
     "url": "https://github.com/JeffRMoore/async-benchmark-runner.git"
   },
   "scripts": {
+    "test": "npm run check",
+    "check": "flow check"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "flow-bin": "^0.22.1"
   }
 }
