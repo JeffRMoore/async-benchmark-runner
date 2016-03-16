@@ -1,0 +1,12 @@
+{
+    "env": {
+      "node": true,
+      "es6" : true
+    },
+    "extends": "eslint-config-snowflake",
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    }
+}

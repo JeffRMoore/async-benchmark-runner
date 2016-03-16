@@ -9,11 +9,15 @@
     "url": "https://github.com/JeffRMoore/async-benchmark-runner.git"
   },
   "scripts": {
-    "test": "npm run check",
+    "test": "npm run lint && npm run check",
+    "lint": "eslint src",
     "check": "flow check"
   },
   "dependencies": {},
   "devDependencies": {
+    "eslint": "2.2.0",
+    "eslint-plugin-jasmine": "^1.6.0",
+    "eslint-plugin-react": "^4.0.0",
     "flow-bin": "^0.22.1"
   }
 }
