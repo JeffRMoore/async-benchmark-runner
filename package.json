@@ -1,0 +1,17 @@
+{
+  "name": "async-benchmark-runner",
+  "version": "0.1.0",
+  "description": "Benchmark runner for node focusing on measuring async code using promises.",
+  "license": "MIT",
+  "main": "src/runner.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JeffRMoore/async-benchmark-runner.git"
+  },
+  "scripts": {
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}
