@@ -1,0 +1,11 @@
+{
+    "presets": ["es2015"],
+    "plugins": [
+      "syntax-async-functions",
+      "transform-async-to-generator",
+      "transform-class-properties",
+      "transform-flow-strip-types",
+      "transform-object-rest-spread",
+      "transform-regenerator"
+    ]
+}
