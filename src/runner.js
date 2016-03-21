@@ -63,7 +63,7 @@ export function startBenchmarking(
     const suiteResult : BenchmarkSuiteResult = {
       name,
       options,
-      startTime: process.hrtime(),
+      startTime: Date.now(),
       results: []
     };
     scheduleBenchmark(resolve, reject, benchmarkSuite, suiteResult);
@@ -245,13 +245,22 @@ function getStartTime() {
 }
 
 /**
+ * Convert an array from process.hrtime into an integer microseconds number
+ */
+function convertHrTimeToMicroseconds(hrTime) {
+  const microsecondsPerSecond = 1000000;
+  const microsecondsPerNanoSecond = 1000;
+  return Math.round(
+    hrTime[0] * microsecondsPerSecond + hrTime[1] / microsecondsPerNanoSecond
+  );
+}
+
+/**
  * Determine how much time has passed in microseconds since an initial reading was taken
  */
 function getTimeElapsed(startTime) {
-  const microsecondsPerSecond = 1000000;
-  const microsecondsPerNanoSecond = 1000;
   const elapsed = process.hrtime(startTime);
-  return elapsed[0] * microsecondsPerSecond + elapsed[1] / microsecondsPerNanoSecond;
+  return convertHrTimeToMicroseconds(elapsed);
 }
 
 /**
