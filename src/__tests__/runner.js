@@ -23,7 +23,7 @@ describe('Basic benchmark suite', () => {
 
 describe('Consecutive benchmark runs', () => {
 
-  pit('have a Consecutive start time', async () => {
+  pit('have a consecutive start time', async () => {
     const result1 = await startBenchmarking('test', [], {});
     const result2 = await startBenchmarking('test', [], {});
     expect(result2.startTime).not.toBeLessThan(result1.startTime);

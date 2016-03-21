@@ -104,8 +104,14 @@ function runBenchmark(
     return;
   }
 
+  if (!benchmark.name) {
+    reject(new Error(
+    `"${benchmark.name} does not provide a name`
+    ));
+  }
+
   const initialResult:BenchmarkResult = {
-    name: 'Benchmark #',
+    name: benchmark.name,
     opsPerSample: 100,
     numSamples: 20,
     timingSamples: [],
