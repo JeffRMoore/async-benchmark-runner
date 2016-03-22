@@ -4,6 +4,8 @@
 export type SynchronousBenchmark =
 {
   name: string;
+  setUp?: () => void;
+  tearDown?: () => void;
   run: () => mixed;
 }
 
@@ -13,6 +15,8 @@ export type SynchronousBenchmark =
 export type ASynchronousBenchmark =
 {
   name: string;
+  setUp?: () => void;
+  tearDown?: () => void;
   startRunning : () => Promise;
 }
 
@@ -66,7 +70,7 @@ export function startBenchmarking(
       startTime: Date.now(),
       results: []
     };
-    scheduleBenchmark(resolve, reject, benchmarkSuite, suiteResult);
+    scheduleNextBenchmark(resolve, reject, benchmarkSuite, suiteResult);
   });
 }
 
@@ -77,7 +81,7 @@ type rejectFn = (value:mixed) => void;
 /**
  * Schedule a benchmark to be run at a later time
  */
-function scheduleBenchmark(
+function scheduleNextBenchmark(
   resolve: resolveFn,
   reject: rejectFn,
   benchmarkSuite: Array<Benchmark>,
@@ -108,6 +112,7 @@ function runBenchmark(
     reject(new Error(
     `"${benchmark.name} does not provide a name`
     ));
+    return;
   }
 
   const initialResult:BenchmarkResult = {
@@ -118,23 +123,52 @@ function runBenchmark(
     memorySamples: []
   };
 
+  const Err = setUpBenchmark(benchmark);
+  if (Err) {
+    reject(Err);
+    return;
+  }
+
   const resolveBenchmark = (finalResult: BenchmarkResult) => {
     suiteResult.results.push(finalResult);
-    scheduleBenchmark(resolve, reject, benchmarkSuite, suiteResult);
+    scheduleNextBenchmark(resolve, reject, benchmarkSuite, suiteResult);
   };
 
-  scheduleSample(resolveBenchmark, reject, benchmark, initialResult);
+  scheduleNextSample(resolveBenchmark, reject, benchmark, initialResult);
+}
+
+/**
+ *  Setup benchmark resources before running
+ */
+function setupBenchmark(benchmark: Benchmark): Error | false {
+  if (benchmark.setUp) {
+    try {
+      benchmark.setUp();
+    } catch (e) {
+      return e;
+    }
+  }
+  return false;
 }
 
 /**
  * Schedule sample collection
  */
-function scheduleSample(
+function scheduleNextSample(
   resolve: resolveFn,
   reject: rejectFn,
   benchmark: ASynchronousBenchmark,
   result: BenchmarkResult
-) {
+): void {
+  if (isSamplingComplete(result)) {
+    const Err = tearDownBenchmark(benchmark);
+    if (Err) {
+      reject(Err);
+    } else {
+      resolve(result);
+    }
+    return;
+  }
   if (benchmark.run) {
     setImmediate(
       collectSynchronousSample,
@@ -159,6 +193,27 @@ function scheduleSample(
 }
 
 /**
+ * Does the result contain all required samples?
+ */
+function isSamplingComplete(result: BenchmarkResult) {
+  return result.timingSamples.length >= result.numSamples;
+}
+
+/**
+ *  release benchmark resources after running
+ */
+function tearDownBenchmark(benchmark: Benchmark): Error | false {
+  if (benchmark.tearDown) {
+    try {
+      benchmark.tearDown();
+    } catch (e) {
+      return e;
+    }
+  }
+  return false;
+}
+
+/**
  * Run an asynchronous benchmark for the desired number of operations and capture
  * the results
  */
@@ -167,10 +222,10 @@ function collectAsynchronousSample(
   reject: rejectFn,
   benchmark: ASynchronousBenchmark,
   result: BenchmarkResult
-) {
-  cleanUpMemory();
-
+): void {
   const promises = new Array(result.opsPerSample);
+
+  cleanUpMemory();
 
   const startMemory = getStartMemory();
   const startTime = getStartTime();
@@ -188,11 +243,7 @@ function collectAsynchronousSample(
 
     recordSample(result, elapsedTime, memoryUsed);
 
-    if (isSamplingComplete(result)) {
-      resolve(result);
-    } else {
-      scheduleSample(resolve, reject, benchmark, result);
-    }
+    scheduleNextSample(resolve, reject, benchmark, result);
   });
 }
 
@@ -221,18 +272,7 @@ function collectSynchronousSample(
 
   recordSample(result, elapsedTime, memoryUsed);
 
-  if (isSamplingComplete(result)) {
-    resolve(result);
-  } else {
-    scheduleSample(resolve, reject, benchmark, result);
-  }
-}
-
-/**
- * Does the result contain all required samples?
- */
-function isSamplingComplete(result: BenchmarkResult) {
-  return result.timingSamples.length >= result.numSamples;
+  scheduleNextSample(resolve, reject, benchmark, result);
 }
 
 /**
