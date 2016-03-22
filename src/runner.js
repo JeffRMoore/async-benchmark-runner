@@ -123,7 +123,7 @@ function runBenchmark(
     memorySamples: []
   };
 
-  const Err = setUpBenchmark(benchmark);
+  const Err = setupBenchmark(benchmark);
   if (Err) {
     reject(Err);
     return;
@@ -294,10 +294,10 @@ function getStartTime() {
  * Convert an array from process.hrtime into an integer microseconds number
  */
 function convertHrTimeToMicroseconds(hrTime) {
-  const microsecondsPerSecond = 1000000;
-  const microsecondsPerNanoSecond = 1000;
+  const microSecondsPerSecond = 1000000;
+  const nanoSecondsPerMicroSecond = 1000;
   return Math.round(
-    hrTime[0] * microsecondsPerSecond + hrTime[1] / microsecondsPerNanoSecond
+    hrTime[0] * microSecondsPerSecond + hrTime[1] / nanoSecondsPerMicroSecond
   );
 }
 
