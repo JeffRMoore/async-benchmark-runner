@@ -230,9 +230,13 @@ function collectAsynchronousSample(
   const startMemory = getStartMemory();
   const startTime = getStartTime();
 
-  // run the benchmark function and collect promises
-  for (let i = 0; i < result.opsPerSample; i++) {
-    promises[i] = benchmark.startRunning();
+  try {
+    // run the benchmark function and collect promises
+    for (let i = 0; i < result.opsPerSample; i++) {
+      promises[i] = benchmark.startRunning();
+    }
+  } catch (e) {
+    reject(e);
   }
 
   // take measurements when all promises have been resolved
@@ -262,9 +266,13 @@ function collectSynchronousSample(
   const startMemory = getStartMemory();
   const startTime = getStartTime();
 
-  // run the benchmark function
-  for (let i = 0; i < result.opsPerSample; i++) {
-    benchmark.run();
+  try {
+    // run the benchmark function
+    for (let i = 0; i < result.opsPerSample; i++) {
+      benchmark.run();
+    }
+  } catch (e) {
+    reject(e);
   }
 
   const elapsedTime = getTimeElapsed(startTime);
