@@ -289,8 +289,12 @@ function collectSynchronousSample(
  * Record a sample memory and time into a benchmark result
  */
 function recordSample(benchmarkResult, elapsedTime, memoryUsed) {
-  benchmarkResult.timingSamples.push(elapsedTime);
-  benchmarkResult.memorySamples.push(memoryUsed);
+  benchmarkResult.timingSamples.push(
+    Math.round(elapsedTime / benchmarkResult.opsPerSample)
+  );
+  benchmarkResult.memorySamples.push(
+    Math.round(memoryUsed / benchmarkResult.opsPerSample)
+  );
 }
 
 /**
