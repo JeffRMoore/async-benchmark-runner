@@ -57,6 +57,10 @@ export type BenchmarkSuiteResult =
   results: Array<BenchmarkResult>;
 }
 
+type resolveFn = (value:mixed) => void;
+
+type rejectFn = (value:mixed) => void;
+
 /**
  * Start the process of running a suite of benchmarks
  */
@@ -72,17 +76,54 @@ export function startBenchmarking(
       startTime: Date.now(),
       results: []
     };
+    const suite = flatten(benchmarkSuite);
     if (!global.gc) {
       reject(new Error('Benchmarks must be run with --expose-gc node option'));
     } else {
-      scheduleNextBenchmark(resolve, reject, flatten(benchmarkSuite), suiteResult);
+      // impedance mismatch between async styles
+      populateInlineCaches(suite).then(() => {
+        scheduleNextBenchmark(resolve, reject, suite, suiteResult);
+      });
     }
   });
 }
 
-type resolveFn = (value:mixed) => void;
-
-type rejectFn = (value:mixed) => void;
+/**
+ * Prevent variation by running each benchmark once, thus populating the
+ * inline caches in the code under test with the full diversity of values
+ * in the benchmark suite.  Reduces sensitivity to benchmark ordering by
+ * preventing optimization and de-optimization cycles as v8 learns new
+ * run time information while cycling through benchmarks.
+ */
+function populateInlineCaches(benchmarkSuite: Array<Benchmark>) {
+  const promises = [];
+  for (let i = 0; i < benchmarkSuite.length; i++) {
+    const benchmark = benchmarkSuite[i];
+    const setupErr = setupBenchmark(benchmark);
+    if (setupErr) {
+      promises.push(Promise.reject(setupErr));
+    }
+    if (benchmark.run) {
+      benchmark.run();
+      const tearDownErr = tearDownBenchmark(benchmark);
+      if (tearDownErr) {
+        promises.push(Promise.reject(tearDownErr));
+      }
+    } else if (benchmark.startRunning) {
+      promises.push(benchmark.startRunning().then(() => {
+        const Err = tearDownBenchmark(benchmark);
+        if (Err) {
+          throw Err;
+        }
+      }));
+    } else {
+      throw Error(
+        `"${benchmark.name} does not provide a run or startRunning function`
+      );
+    }
+  }
+  return Promise.all(promises);
+}
 
 /**
  * Schedule a benchmark to be run at a later time
