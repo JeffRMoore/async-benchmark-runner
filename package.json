@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "experiments.js": "^0.1.0",
+    "lodash.flatten": "^4.1.1",
     "minimalist": "^1.0.0",
     "simple-statistics": "^2.0.0-beta1"
   },

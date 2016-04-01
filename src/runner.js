@@ -1,3 +1,5 @@
+import flatten from 'lodash.flatten';
+
 /**
  * Describe a synchronous benchmark
  */
@@ -70,7 +72,7 @@ export function startBenchmarking(
       startTime: Date.now(),
       results: []
     };
-    scheduleNextBenchmark(resolve, reject, benchmarkSuite, suiteResult);
+    scheduleNextBenchmark(resolve, reject, flatten(benchmarkSuite), suiteResult);
   });
 }
 
