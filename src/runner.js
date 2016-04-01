@@ -117,8 +117,8 @@ function runBenchmark(
 
   const initialResult:BenchmarkResult = {
     name: benchmark.name,
-    opsPerSample: 100,
-    numSamples: 20,
+    opsPerSample: 1000,
+    numSamples: 100,
     timingSamples: [],
     memorySamples: []
   };

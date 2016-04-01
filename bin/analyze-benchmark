@@ -1,0 +1,132 @@
+#!/usr/bin/env node
+'use strict';
+
+const parseArgs = require('minimist');
+const fs = require('fs');
+const ss = require('simple-statistics');
+const experiments = require('experiments.js');
+  
+const argv = parseArgs(process.argv.slice(2));
+
+const suiteResults = argv._.map(filename => {
+  const contents = fs.readFileSync(filename, 'utf8');
+  return JSON.parse(contents);
+});
+
+if (suiteResults.length > 2) {
+  console.log('Can only analyze 1 or 2 result files at a time');
+  process.exit(1);
+}
+
+if (suiteResults.length === 1) {
+  console.log(
+    formatLeft('Benchmark', 40),
+    formatRight('Time', 16),
+    formatRight('Memory', 18)
+  );
+  console.log(
+    '-'.repeat(40),
+    '-'.repeat(16),
+    '-'.repeat(18)
+  );
+  suiteResults[0].results.forEach( result => {
+    console.log(
+      formatLeft(result.name, 40),
+      formatRight(Math.round(ss.mean(result.timingSamples) / result.opsPerSample) + ' µs', 10),
+      '±' + formatRight(Math.round(marginOfError(result.timingSamples)), 3) + '%',
+      formatRight(Math.round(ss.mean(result.memorySamples) / result.opsPerSample) + ' b', 12),
+      '±' + formatRight(Math.round(marginOfError(result.memorySamples)), 3) + '%'
+    );
+  });
+}
+
+if (suiteResults.length === 2) {
+  let baseResult;
+  let testResult;
+  if (suiteResults[0].startTime > suiteResults[1].startTime) {
+    baseResult = suiteResults[1];
+    testResult = suiteResults[0];
+  } else {
+    baseResult = suiteResults[0];
+    testResult = suiteResults[1];
+  }
+  console.log(
+    formatLeft('Benchmark', 40),
+    formatRight('Time', 16),
+    formatRight('Memory', 18)
+  );
+  console.log(
+    '-'.repeat(40),
+    '-'.repeat(16),
+    '-'.repeat(18)
+  );
+  for (let i = 0; i < baseResult.results.length; i++) {
+    const timing = experiments.tTest(
+      normalizeSample(baseResult.results[i].timingSamples, baseResult.results[i].opsPerSample),
+      normalizeSample(testResult.results[i].timingSamples, testResult.results[i].opsPerSample)
+    );
+    const memory = experiments.tTest(
+      normalizeSample(baseResult.results[i].memorySamples, baseResult.results[i].opsPerSample),
+      normalizeSample(testResult.results[i].memorySamples, testResult.results[i].opsPerSample)
+    );
+    
+    let timingDifference;
+    let timingConfidence;
+    if (timing.probabilityLevel < .05) {
+      timingDifference = formatRight(Math.round(timing.meanDifference) + ' µs', 10);
+      const timingMarginOfError = ((timing.confidenceInterval[1] - timing.meanDifference) / timing.meanDifference) * 100 || 0
+      timingConfidence = '±' + formatRight(Math.round(timingMarginOfError), 3) + '%';
+    } else {
+      timingDifference = formatRight('', 10);
+      timingConfidence = ' ' + formatRight('', 3) + ' ';
+    }
+
+    let memoryDifference;
+    let memoryConfidence;
+    if (memory.probabilityLevel < .05) {
+      memoryDifference = formatRight(Math.round(memory.meanDifference) + ' b', 12);
+      const memoryMarginOfError = ((memory.confidenceInterval[1] - memory.meanDifference) / memory.meanDifference) * 100 || 0
+      memoryConfidence = '±' + formatRight(Math.round(memoryMarginOfError), 3) + '%';
+    } else {
+      memoryDifference = formatRight('', 12);
+      memoryConfidence = ' ' + formatRight('', 3) + ' ';
+    }
+
+    console.log(
+      formatLeft(baseResult.results[i].name, 40),
+      timingDifference,
+      timingConfidence,
+      memoryDifference,
+      memoryConfidence
+    );
+
+  }
+}
+
+function normalizeSample(sample, opsPerSample) {
+  return sample.map( value => value / opsPerSample);
+}
+
+function formatLeft(value, totalLength) {
+  const str = String(value);
+  if (str.length > totalLength) {
+    return str.substring(0, totalLength);
+  }
+  return str + ' '.repeat(totalLength - str.length);
+}
+
+function formatRight(value, totalLength) {
+  const str = String(value);
+  if (str.length > totalLength) {
+    return str.substring(0, totalLength);
+  }
+  return ' '.repeat(totalLength - str.length) + str;
+}
+
+function marginOfError(samples) {
+  const mean = ss.mean(samples);
+  const standardError = ss.standardDeviation(samples) / Math.sqrt(samples.length);
+  const degreesOfFreedom = samples.length - 1;
+  const interval = experiments.confidenceIntervalForT(mean, standardError, degreesOfFreedom, .95);
+  return ((interval[1] - mean) / mean) * 100 || 0;
+}

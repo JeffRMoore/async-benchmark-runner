@@ -4,7 +4,7 @@
   "author": "Jeff Moore <jeff@procata.com>",
   "description": "Benchmark runner for node focusing on measuring asynchronous code using promises.",
   "license": "MIT",
-  "main": "runner.js",
+  "main": "src/runner.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/JeffRMoore/async-benchmark-runner.git"
@@ -22,9 +22,16 @@
     "testonly": "jest src",
     "lint": "eslint src",
     "check": "flow check",
-    "build": "babel src --ignore __tests__ --out-dir dist/ && cp package.json dist/"
+    "build": "babel src --ignore __tests__ --out-dir dist/src && cp package.json dist/ && mkdir -p dist/bin && cp bin/analyze-benchmark dist/bin"
   },
-  "dependencies": {},
+  "bin": {
+    "analyze-benchmark": "bin/analyze-benchmark"
+  },
+  "dependencies": {
+    "experiments.js": "^0.1.0",
+    "minimalist": "^1.0.0",
+    "simple-statistics": "^2.0.0-beta1"
+  },
   "devDependencies": {
     "babel-cli": "6.6.5",
     "babel-eslint": "6.0.0-beta.5",
