@@ -32,7 +32,7 @@ if (suiteResults.length === 1) {
   suiteResults[0].results.forEach( result => {
     console.log(
       formatLeft(result.name, 40),
-      formatRight(Math.round(ss.mean(result.timingSamples) / result.opsPerSample) + ' µs', 10),
+      formatRight(Math.round(ss.mean(result.timingSamples) / result.opsPerSample) + ' ns', 10),
       '±' + formatRight(Math.round(marginOfError(result.timingSamples)), 3) + '%',
       formatRight(Math.round(ss.mean(result.memorySamples) / result.opsPerSample) + ' b', 12),
       '±' + formatRight(Math.round(marginOfError(result.memorySamples)), 3) + '%'

@@ -299,22 +299,12 @@ function getStartTime() {
 }
 
 /**
- * Convert an array from process.hrtime into an integer microseconds number
- */
-function convertHrTimeToMicroseconds(hrTime) {
-  const microSecondsPerSecond = 1000000;
-  const nanoSecondsPerMicroSecond = 1000;
-  return Math.round(
-    hrTime[0] * microSecondsPerSecond + hrTime[1] / nanoSecondsPerMicroSecond
-  );
-}
-
-/**
  * Determine how much time has passed in microseconds since an initial reading was taken
  */
 function getTimeElapsed(startTime) {
+  const nanoSecondsPerSecond = 1e9;
   const elapsed = process.hrtime(startTime);
-  return convertHrTimeToMicroseconds(elapsed);
+  return elapsed[0] * nanoSecondsPerSecond + elapsed[1];
 }
 
 /**
