@@ -72,7 +72,11 @@ export function startBenchmarking(
       startTime: Date.now(),
       results: []
     };
-    scheduleNextBenchmark(resolve, reject, flatten(benchmarkSuite), suiteResult);
+    if (!global.gc) {
+      reject(new Error('Benchmarks must be run with --expose-gc node option'));
+    } else {
+      scheduleNextBenchmark(resolve, reject, flatten(benchmarkSuite), suiteResult);
+    }
   });
 }
 
