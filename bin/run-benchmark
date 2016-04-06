@@ -1,0 +1,42 @@
+#!/usr/bin/env node --expose-gc
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const mkdirp = require('mkdirp');
+const parseArgs = require('minimist');
+const startBenchmarking = require('../src/runner').startBenchmarking;
+  
+const argv = parseArgs(process.argv.slice(2));
+
+const suiteFile = path.resolve(
+  process.cwd(),
+  argv.suite ? argv.suite : 'benchmarks\suite'
+);
+const outDir = path.resolve(
+  process.cwd(),
+  argv['out-dir'] ? argv['out-dir'] : 'benchmark-results'
+);
+
+const benchmarkSuite = require(suiteFile);
+
+console.log('Running benchmark suite from', path.relative(process.cwd(), suiteFile));
+startBenchmarking(benchmarkSuite.name, benchmarkSuite.benchmarks).then( results => {
+  mkdirp(outDir, (err) => {
+    if (err) {
+      console.log(err);
+      process.exit(1);
+    }
+    const filename = path.join(outDir, results.startTime + '-benchmark.json');
+    console.log('Writing results to', path.relative(process.cwd(), filename));
+    fs.writeFile(filename, JSON.stringify(results), (err) => {
+      if (err) {
+        console.log(err);
+        process.exit(1);
+      }
+    });
+  });
+}).catch( err => {
+  console.log(err);
+  process.exit(1);
+});

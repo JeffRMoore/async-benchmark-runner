@@ -22,15 +22,17 @@
     "testonly": "jest src",
     "lint": "eslint src",
     "check": "flow check",
-    "build": "babel src --ignore __tests__ --out-dir dist/src && cp package.json dist/ && mkdir -p dist/bin && cp bin/analyze-benchmark dist/bin"
+    "build": "babel src --ignore __tests__ --out-dir dist/src && cp package.json dist/ && mkdir -p dist/bin && cp bin/analyze-benchmark dist/bin && cp bin/run-benchmark dist/bin"
   },
   "bin": {
-    "analyze-benchmark": "bin/analyze-benchmark"
+    "analyze-benchmark": "bin/analyze-benchmark",
+    "run-benchmark": "bin/run-benchmark"
   },
   "dependencies": {
     "experiments.js": "^0.1.0",
     "lodash.flatten": "^4.1.1",
     "minimalist": "^1.0.0",
+    "mkdirp": "^0.5.1",
     "simple-statistics": "^2.0.0-beta1"
   },
   "devDependencies": {
