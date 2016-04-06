@@ -3,20 +3,45 @@
 
 const parseArgs = require('minimist');
 const fs = require('fs');
+const path = require('path');
 const ss = require('simple-statistics');
 const experiments = require('experiments.js');
   
 const argv = parseArgs(process.argv.slice(2));
 
-const suiteResults = argv._.map(filename => {
-  const contents = fs.readFileSync(filename, 'utf8');
-  return JSON.parse(contents);
-});
-
-if (suiteResults.length > 2) {
+if (argv._.length > 2) {
   console.log('Can only analyze 1 or 2 result files at a time');
   process.exit(1);
 }
+
+let files = [];
+
+if (argv._.length === 0) {
+  const resultDir = path.resolve(
+    process.cwd(),
+    argv['result-dir'] ? argv['result-dir'] : 'benchmark-results'
+  );
+  const availableResults = fs.readdirSync(resultDir).sort();
+  if (availableResults.length > 0) {
+    files.push(
+      path.join(resultDir,
+      availableResults[availableResults.length-1])
+    );
+  }
+  if (availableResults.length > 1) {
+    files.push(
+      path.join(resultDir,
+      availableResults[availableResults.length-2])
+    );
+  }
+} else {
+  files = argv._;
+}
+
+const suiteResults = files.map(filename => {
+  const contents = fs.readFileSync(filename, 'utf8');
+  return JSON.parse(contents);
+});
 
 if (suiteResults.length === 1) {
   console.log(
