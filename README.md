@@ -6,8 +6,48 @@ ABR is intended to be run as a part of a performance regression test suite.  It 
 
 `npm install --save-dev async-benchmark-runner`
 
+## Getting Started
+Here is an example of the simplest possible benchmark suite:
+```
+const benchmarks = [
+  {
+    name: 'NO-OP Synchronous',
+    run: () => {
+      return false;
+  }
+];
+```
+This creates a syncronous benchmark that does nothing.  The benchmark suite can be run by calling the `startBenchmarking` function:
+```
+startBenchmarking('My Suite', benchmarks).then( results => {
+  console.log(JSON.stringify(results));
+}).catch( error => {
+  console.log(error);
+});
+```
+Here is the equivelent simplest possible Asynchronous benchmark:
+```
+const benchmarks = [
+  {
+    name: 'NO-OP Asynchronous',
+    startRunning: () => {
+      return Promise.resolve(false);
+    }
+  }
+];
+```
+An asyncronous benchmark must return a promise.  The measurement interval will not be completed until that promise resolves.
+
 ## Benchmark Suite
-A benchmark suite is an array of benchmark objects.
+A benchmark suite is an array of benchmark definition objects.  A benchmark definition is a simple javascript object.  Here is an example of the simplest possible benchmark suite.
+
+There are two types of benchmark, one for synchronous benchmarks and one for asynchronous benchmarks.  Both types share the following fields:
+
+| field | Description |
+| --- | --- |
+| name | The name of the benchmark for reporting purposes.  This is required.  It must also be unique within a benchmark suite. |
+| setUp | An optional function which will be called prior to running the benchmark, outside of any measuring interval.  Use to initialize any data required during the benchmark run. |
+| tearDown | An optional function which will be called after the benchmark has completed running, outside of any measuring interval.  Use to free resources to make them available for other benchmarks. |
 
 ## Benchmarking challenges under v8
 Javascript is a dynamic language.  V8 gathers information about code as it runs, attempting to apply optimizations where they will have the most impact and trying not to let the cost of optimizing to outweigh the gains.  This can make creating and interpreting benchmarks under node difficult.
