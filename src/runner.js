@@ -1,3 +1,4 @@
+/* @flow */
 import flatten from 'lodash.flatten';
 
 /**
@@ -8,7 +9,7 @@ export type SynchronousBenchmark =
   name: string;
   setUp?: () => void;
   tearDown?: () => void;
-  run: () => mixed;
+  run: () => any;
 }
 
 /**
@@ -54,19 +55,19 @@ export type BenchmarkSuiteResult =
 {
   name: string;
   options: BenchmarkingOptions;
-  startTime: Array<number>;
+  startTime: number;
   results: Array<BenchmarkResult>;
 }
 
-type resolveFn = (value:mixed) => void;
+type resolveFn = (value: any) => void;
 
-type rejectFn = (value:mixed) => void;
+type rejectFn = (value: any) => void;
 
 /**
  * Start the process of running a suite of benchmarks
  */
 export function startBenchmarking(
-  name: String,
+  name: string,
   benchmarkSuite: Array<Benchmark>,
   options: BenchmarkingOptions
 ) : Promise {
@@ -148,7 +149,7 @@ function runBenchmark(
   suiteResult: BenchmarkSuiteResult
 ) : void {
 
-  const benchmark = benchmarkSuite.shift();
+  const benchmark: Benchmark = benchmarkSuite.shift();
 
   // if there are no more benchmarks, stop
   if (!benchmark) {
@@ -165,7 +166,7 @@ function runBenchmark(
 
   const initialResult:BenchmarkResult = {
     name: benchmark.name,
-    isAsynchronous: Boolean(benchmark.startRunning),
+    isAsynchronous: benchmark.startRunning ? true : false,
     opsPerSample: 1000,
     numSamples: 100,
     timingSamples: [],
@@ -206,7 +207,7 @@ function setupBenchmark(benchmark: Benchmark): Error | false {
 function scheduleNextSample(
   resolve: resolveFn,
   reject: rejectFn,
-  benchmark: ASynchronousBenchmark,
+  benchmark: Benchmark,
   result: BenchmarkResult
 ): void {
   if (isSamplingComplete(result)) {

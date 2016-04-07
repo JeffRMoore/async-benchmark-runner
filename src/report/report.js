@@ -1,3 +1,4 @@
+/* @flow */
 import {
   formatLeft,
   formatRight
@@ -17,8 +18,8 @@ import {
  */
 export function reportResult(
   benchmarkResult: BenchmarkSuiteResult,
-  outputFn
-) {
+  outputFn: (...x: any) => void
+): void {
   const marginOfErrorSize = 3;
   const marginOfErrorUnits = '%';
   const marginOfErrorPrefix = ' ±';

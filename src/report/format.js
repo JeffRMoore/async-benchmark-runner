@@ -1,7 +1,11 @@
+/* @flow */
 /**
  * Left justify a value
  */
-export function formatLeft(value, totalLength) {
+export function formatLeft(
+  value: mixed,
+  totalLength: number
+): string {
   const str = String(value);
   if (str.length > totalLength) {
     return str.substring(0, totalLength);
@@ -12,7 +16,10 @@ export function formatLeft(value, totalLength) {
 /**
  * Right justify a value
  */
-export function formatRight(value, totalLength) {
+export function formatRight(
+  value: mixed,
+  totalLength: number
+): string {
   const str = String(value);
   if (str.length > totalLength) {
     return str.substring(0, totalLength);

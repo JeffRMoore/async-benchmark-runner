@@ -1,3 +1,4 @@
+/* @flow */
 import {
   mean,
   standardDeviation
@@ -10,7 +11,7 @@ import {
 /**
  * Calculate the margin of error for a set of samples
  */
-export function marginOfError(samples) {
+export function marginOfError(samples: Array<number>) : number {
   const toPercent = 100;
   const confidenceLevel = 0.95;
   const sampleMean = mean(samples);
