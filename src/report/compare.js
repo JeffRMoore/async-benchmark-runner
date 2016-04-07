@@ -66,6 +66,8 @@ export function compareResults(
     '-'.repeat(timeColumnSize),
     '-'.repeat(memoryColumnSize)
   );
+
+  let insignificantBenchmarks = 0;
   for (let i = 0; i < baseResult.results.length; i++) {
     const asyncColumn =
       formatLeft(baseResult.results[i].isAsynchronous ? '*' : '', asyncColumnSize);
@@ -82,8 +84,9 @@ export function compareResults(
       testResult.results[i].memorySamples
     );
 
+    const isTimeSignificant = time.probabilityLevel < significanceThreshold;
     let timeColumn;
-    if (time.probabilityLevel < significanceThreshold) {
+    if (isTimeSignificant) {
       const timeDifference = Math.round(time.meanDifference);
       const timeMarginOfError =
         (time.confidenceInterval[1] - time.meanDifference) /
@@ -99,8 +102,10 @@ export function compareResults(
       timeColumn = formatRight('', timeColumnSize);
     }
 
+    const isMemorySignificant =
+      memory.probabilityLevel < significanceThreshold;
     let memoryColumn;
-    if (memory.probabilityLevel < significanceThreshold) {
+    if (isMemorySignificant) {
       const memoryDifference = Math.round(memory.meanDifference);
       const memoryMarginOfError =
         (memory.confidenceInterval[1] - memory.meanDifference) /
@@ -116,7 +121,18 @@ export function compareResults(
       memoryColumn = formatRight('', memoryColumnSize);
     }
 
-    outputFn(asyncColumn, benchmarkColumn, timeColumn, memoryColumn);
+    if (isTimeSignificant || isMemorySignificant) {
+      outputFn(asyncColumn, benchmarkColumn, timeColumn, memoryColumn);
+    } else {
+      insignificantBenchmarks += 1;
+    }
 
+  }
+
+  if (insignificantBenchmarks > 0) {
+    outputFn(
+      `  ${insignificantBenchmarks} benchmarks not significantly different ` +
+      `(p > ${significanceThreshold})`
+      );
   }
 }
