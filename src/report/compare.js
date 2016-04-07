@@ -20,7 +20,7 @@ export function compareResults(
 ) {
   const marginOfErrorSize = 3;
   const marginOfErrorUnits = '%';
-  const marginOfErrorPrefix = '±';
+  const marginOfErrorPrefix = ' ±';
   const timeSize = 7;
   const timeUnits = ' ns';
   const memorySize = 9;

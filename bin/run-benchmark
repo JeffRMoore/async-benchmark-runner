@@ -6,6 +6,7 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const parseArgs = require('minimist');
 const startBenchmarking = require('../src/runner').startBenchmarking;
+const reportResult = require('../src/report/report').reportResult;
   
 const argv = parseArgs(process.argv.slice(2));
 
@@ -22,6 +23,7 @@ const benchmarkSuite = require(suiteFile);
 
 console.log('Running benchmark suite from', path.relative(process.cwd(), suiteFile));
 startBenchmarking(benchmarkSuite.name, benchmarkSuite.benchmarks).then( results => {
+  reportResult(results, console.log);
   mkdirp(outDir, (err) => {
     if (err) {
       console.log(err);
