@@ -164,6 +164,7 @@ function runBenchmark(
     return;
   }
 
+  /* eslint no-unneeded-ternary:0 */
   const initialResult:BenchmarkResult = {
     name: benchmark.name,
     isAsynchronous: benchmark.startRunning ? true : false,
