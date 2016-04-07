@@ -79,14 +79,11 @@ export function startBenchmarking(
       results: []
     };
     const suite = flatten(benchmarkSuite);
-    if (!global.gc) {
-      reject(new Error('Benchmarks must be run with --expose-gc node option'));
-    } else {
-      // impedance mismatch between async styles
-      populateInlineCaches(suite).then(() => {
-        scheduleNextBenchmark(resolve, reject, suite, suiteResult);
-      });
-    }
+
+    // impedance mismatch between async styles
+    populateInlineCaches(suite).then(() => {
+      scheduleNextBenchmark(resolve, reject, suite, suiteResult);
+    });
   });
 }
 
@@ -294,7 +291,7 @@ function collectAsynchronousSample(
   Promise.all(promises).then(() => {
 
     const elapsedTime = getTimeElapsed(startTime);
-    const memoryUsed = getMemoryUsed(startMemory);
+    const memoryUsed = global.gc ? getMemoryUsed(startMemory) : 0;
 
     recordSample(result, elapsedTime, memoryUsed);
 
@@ -327,7 +324,7 @@ function collectSynchronousSample(
   }
 
   const elapsedTime = getTimeElapsed(startTime);
-  const memoryUsed = getMemoryUsed(startMemory);
+  const memoryUsed = global.gc ? getMemoryUsed(startMemory) : 0;
 
   recordSample(result, elapsedTime, memoryUsed);
 
