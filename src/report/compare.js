@@ -21,10 +21,11 @@ export function compareResults(
   const marginOfErrorSize = 3;
   const marginOfErrorUnits = '%';
   const marginOfErrorPrefix = ' ±';
-  const timeSize = 7;
+  const timeSize = 8;
   const timeUnits = ' ns';
-  const memorySize = 9;
+  const memorySize = 10;
   const memoryUnits = ' b';
+  const asyncColumnSize = 1;
   const benchmarkColumnSize = 40;
   const timeColumnSize =
     timeSize +
@@ -54,16 +55,20 @@ export function compareResults(
   }
 
   outputFn(
+    formatLeft('A', asyncColumnSize),
     formatLeft('Benchmark', benchmarkColumnSize),
     formatRight('Time', timeColumnSize),
     formatRight('Memory', memoryColumnSize)
   );
   outputFn(
+    '-'.repeat(asyncColumnSize),
     '-'.repeat(benchmarkColumnSize),
     '-'.repeat(timeColumnSize),
     '-'.repeat(memoryColumnSize)
   );
   for (let i = 0; i < baseResult.results.length; i++) {
+    const asyncColumn =
+      formatLeft(baseResult.results[i].isAsynchronous ? '*' : '', asyncColumnSize);
     const benchmarkColumn = formatLeft(
       baseResult.results[i].name, benchmarkColumnSize
     );
@@ -111,7 +116,7 @@ export function compareResults(
       memoryColumn = formatRight('', memoryColumnSize);
     }
 
-    outputFn(benchmarkColumn, timeColumn, memoryColumn);
+    outputFn(asyncColumn, benchmarkColumn, timeColumn, memoryColumn);
 
   }
 }

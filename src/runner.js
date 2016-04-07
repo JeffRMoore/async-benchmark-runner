@@ -33,6 +33,7 @@ export type Benchmark = SynchronousBenchmark | ASynchronousBenchmark;
 export type BenchmarkResult =
 {
   name: string;
+  isAsynchronous: boolean;
   opsPerSample: number;
   numSamples: number;
   timingSamples: Array<number>;
@@ -164,6 +165,7 @@ function runBenchmark(
 
   const initialResult:BenchmarkResult = {
     name: benchmark.name,
+    isAsynchronous: Boolean(benchmark.startRunning),
     opsPerSample: 1000,
     numSamples: 100,
     timingSamples: [],
