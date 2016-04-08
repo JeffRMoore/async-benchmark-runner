@@ -10,6 +10,8 @@ import {
   tTest
 } from 'experiments.js';
 
+const defaultSignificanceThreshold = 0.05;
+
 /**
  * Compare the results of two benchmarks, outputting the differences based
  * on statistical significance.
@@ -17,7 +19,8 @@ import {
 export function compareResults(
   result1: BenchmarkSuiteResult,
   result2: BenchmarkSuiteResult,
-  outputFn: (...x: any) => void
+  outputFn: (...x: any) => void,
+  significanceThreshold: number = defaultSignificanceThreshold
 ): void {
   const marginOfErrorSize = 3;
   const marginOfErrorUnits = '%';
@@ -40,7 +43,6 @@ export function compareResults(
     marginOfErrorPrefix.length +
     marginOfErrorSize +
     marginOfErrorUnits.length;
-  const significanceThreshold = 0.05;
   const toPercent = 100;
 
   // Sort the input results into a base result (before) and
