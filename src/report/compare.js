@@ -11,6 +11,7 @@ import {
 } from 'experiments.js';
 
 const defaultSignificanceThreshold = 0.05;
+const defaultConfidenceLevel = 0.95;
 
 /**
  * Compare the results of two benchmarks, outputting the differences based
@@ -20,7 +21,8 @@ export function compareResults(
   result1: BenchmarkSuiteResult,
   result2: BenchmarkSuiteResult,
   outputFn: (...x: any) => void,
-  significanceThreshold: number = defaultSignificanceThreshold
+  significanceThreshold: number = defaultSignificanceThreshold,
+  confidenceLevel: number = defaultConfidenceLevel
 ): void {
   const marginOfErrorSize = 3;
   const marginOfErrorUnits = '%';
@@ -80,11 +82,13 @@ export function compareResults(
 
     const time = tTest(
       baseResult.results[i].timingSamples,
-      testResult.results[i].timingSamples
+      testResult.results[i].timingSamples,
+      confidenceLevel
     );
     const memory = tTest(
       baseResult.results[i].memorySamples,
-      testResult.results[i].memorySamples
+      testResult.results[i].memorySamples,
+      confidenceLevel
     );
 
     const isTimeSignificant = time.probabilityLevel < significanceThreshold;
