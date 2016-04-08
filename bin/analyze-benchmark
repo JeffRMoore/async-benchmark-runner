@@ -8,11 +8,13 @@ const path = require('path');
 const reportResult = require('../src/report/report').reportResult;
 const compareResults = require('../src/report/compare').compareResults;
 
+const defaultSignificanceThreshold = 0.05;
+const defaultConfidenceLevel = 0.95;
 
 const argv = parseArgs(process.argv.slice(2));
 
 if (argv._.length > 2) {
-  console.log('Can only analyze 1 or 2 result files at a time');
+  console.log('Can only analyze 1 or 2 benchmark result files at a time');
   process.exit(1);
 }
 
@@ -50,5 +52,17 @@ if (suiteResults.length === 1) {
 }
 
 if (suiteResults.length === 2) {
-  compareResults(suiteResults[0], suiteResults[1], console.log);
+  const significanceThreshold =
+    argv['significance-threshold'] !== undefined ?
+      Number(argv['significance-threshold']) : defaultConfidenceLevel;
+  const confidenceLevel =
+    argv['confidence-level'] !== undefined ?
+      Number(argv['confidence-level']) : defaultConfidenceLevel;
+  compareResults(
+    suiteResults[0],
+    suiteResults[1],
+    console.log,
+    significanceThreshold,
+    confidenceLevel
+    );
 }
