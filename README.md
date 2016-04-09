@@ -25,8 +25,7 @@ exports.benchmarks = [
 ];
 ```
 This creates a synchronous benchmark that does nothing.  Place this in a file in
-your project called `benchmarks/suite.js`.  This location can be changed by
-specifying an alternate location with a `--suite` parameter.
+your project called `benchmarks/suite.js`.  
 
 Run the benchmark suite via the cli utility:
 ```
@@ -35,6 +34,9 @@ Run the benchmark suite via the cli utility:
 
 The results will be saved to a unique json file in the `benchmark-results`
 folder.  The result location can be changed with a `--result-dir` parameter.
+This location can be changed by specifying an alternate location with 
+via the `--suite` parameter.
+
 A result report will be output:
 
 ```
@@ -121,6 +123,8 @@ asynchronous benchmarks.  Both types share the following fields:
 | name | The name of the benchmark for reporting purposes.  This is required.  It must also be unique within a benchmark suite. |
 | setUp | An optional function which will be called prior to running the benchmark, outside of any measuring interval.  Use to initialize any data required during the benchmark run. |
 | tearDown | An optional function which will be called after the benchmark has completed running, outside of any measuring interval.  Use to free resources to make them available for other benchmarks. |
+
+### Benchmarking overhead
 
 ## Benchmarking challenges under v8
 Javascript is a dynamic language.  V8 gathers information about code as it runs,
