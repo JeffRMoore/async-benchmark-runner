@@ -67,6 +67,7 @@ The development of the benchmark suite itself can be more difficult than develop
 
 ## Roadmap / TODO
 
+- fix --expose-gc parameter for linux shebang issue
 - Update getting started docs
 - Document running with ENV production
 - Implement measurement event listener
