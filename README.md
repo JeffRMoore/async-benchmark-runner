@@ -9,29 +9,33 @@ ABR is intended to be run as a part of a performance regression test suite.  It 
 ## Getting Started
 Here is an example of the simplest possible benchmark suite:
 ```
-const benchmarks = [
-  {
-    name: 'NO-OP Synchronous',
-    run: () => {
-      return false;
-  }
-];
-```
-This creates a syncronous benchmark that does nothing.  The benchmark suite can be run by calling the `startBenchmarking` function:
-```
-startBenchmarking('My Suite', benchmarks).then( results => {
-  console.log(JSON.stringify(results));
-}).catch( error => {
-  console.log(error);
-});
-```
-Here is the equivelent simplest possible Asynchronous benchmark:
-```
-const benchmarks = [
+export const benchmarkSuiteName = 'Simple Suite';
+
+export const benchmarks = [
   {
     name: 'NO-OP Asynchronous',
     startRunning: () => {
       return Promise.resolve(false);
+    }
+  }
+];
+```
+This creates a syncronous benchmark that does nothing.  Place this in a file in your project `called benchmarks/suite.js`.  (This can be changed.)
+
+Run the benchmark suite via the cli utility:
+```
+./node_modules/.bin/run-benchmark
+```
+
+Here is the equivelent simplest possible Asynchronous benchmark:
+```
+export const benchmarkSuiteName = 'Simple Suite';
+
+export const benchmarks = [
+  {
+    name: 'NO-OP Synchronous',
+    run: () => {
+      return false;
     }
   }
 ];
