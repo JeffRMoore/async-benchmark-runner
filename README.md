@@ -6,7 +6,9 @@ load testing.
 
 ## Installing
 
-`npm install --save-dev async-benchmark-runner`
+```
+npm install --save-dev async-benchmark-runner
+```
 
 ## Getting Started
 Here is an example of the simplest possible benchmark suite:
@@ -23,7 +25,8 @@ exports.benchmarks = [
 ];
 ```
 This creates a synchronous benchmark that does nothing.  Place this in a file in
-your project called `benchmarks/suite.js`.  (This location can be changed.)
+your project called `benchmarks/suite.js`.  This location can be changed by
+specifying an alternate location with a `--suite` parameter.
 
 Run the benchmark suite via the cli utility:
 ```
@@ -31,7 +34,8 @@ Run the benchmark suite via the cli utility:
 ```
 
 The results will be saved to a unique json file in the `benchmark-results`
-folder.  (This can be changed.)  A result report will be output:
+folder.  The result location can be changed with a `--result-dir` parameter.
+A result report will be output:
 
 ```
 Running benchmark suite from benchmark/suite
@@ -41,7 +45,7 @@ A Benchmark                                             Time             Memory
 Writing results to benchmark-results/1460241638054-benchmark.json
 ```
 
-Here is the equivelent simplest possible Asynchronous benchmark:
+Here is the equivelent simplest possible asynchronous benchmark:
 ```
 exports.benchmarkSuiteName = 'Simple Suite';
 
@@ -57,7 +61,7 @@ exports.benchmarks = [
 An asynchronous benchmark must return a promise.  The measurement interval will 
 not be completed until that promise resolves.
 
-The results of running the benchmark will look like this
+The results of running this benchmark will look like this:
 
 ```
 Running benchmark suite from benchmark/suite
@@ -67,7 +71,7 @@ A Benchmark                                             Time             Memory
 Writing results to benchmark-results/1460240762239-benchmark.json
 ```
 
-Note that asynchronous benchmark names will be prefixed by an asterisk in the 
+Asynchronous benchmark names will be prefixed by an asterisk in the 
 result report.
 
 ## Creating a "quiet" environment for running benchmarks
@@ -81,8 +85,11 @@ run the same benchmark suite twice
 ./node_modules/.bin/run-benchmark
 ./node_modules/.bin/run-benchmark
 ```
-Then use the analyze-benchmark tool with a high sensativity to compare the 
-benchmark results.
+
+The analyze-benchmark tool will automatically compare the last two benchmark 
+results.  Here we also increase the statisitical signficance threshold to
+make the results more sensative.
+
 ```
 ./node_modules/.bin/analyze-benchmark --significance-threshold=0.50
 ```
