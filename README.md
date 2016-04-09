@@ -46,6 +46,12 @@ A Benchmark                                             Time             Memory
   NO-OP Synchronous                              13 ns ± 10%          2 b ±  3%
 Writing results to benchmark-results/1460241638054-benchmark.json
 ```
+Benchmark times are displayed in nanoseconds which is the unit of measure for
+node's [high resolution  timer](https://nodejs.org/api/process.html#process_process_hrtime).
+Memory is displayed in bytes.  The percentage indicates a [margin of error](https://en.wikipedia.org/wiki/Margin_of_error)
+calculated from a default [confidence level](https://en.wikipedia.org/wiki/Confidence_interval) of 0.95.
+This represents observed variation in timing, but cannot account for errors in
+benchmark design or environment setup.
 
 Here is the equivelent simplest possible asynchronous benchmark:
 ```
@@ -76,7 +82,7 @@ Writing results to benchmark-results/1460240762239-benchmark.json
 Asynchronous benchmark names will be prefixed by an asterisk in the 
 result report.
 
-## Creating a "quiet" environment for running benchmarks
+## Creating a Quiet Environment for Running Benchmarks
 Comparing different runs of the same benchmark requires that the conditions
 under which each are run to be similiar.  You will acheive better results if you
 eliminate and exit any extranious programs on the machine you are running your
@@ -89,18 +95,34 @@ run the same benchmark suite twice
 ```
 
 The analyze-benchmark tool will automatically compare the last two benchmark 
-results.  Here we also increase the statisitical signficance threshold to
-make the results more sensative.
+results.  It tests the statistical signficance of the two sets of results
+and will only show results from benchmarks that are significantly different.
+
+We can use this to measure environmental variation because two runs of
+the same benchmark should not be signficantly different.
+
+The default significance threshold is 5% (p < 0.5) and indicates less than
+5% chance of false significance.  To increase the sensativity of our
+test of our environment we increase the statisitical signficance threshold
+to 50% via the `--signficance-threshold` parameter.
 
 ```
 ./node_modules/.bin/analyze-benchmark --significance-threshold=0.50
 ```
-analyze-benchmark should report no significant difference between the runs.
+analyze-benchmark should report no significant difference between the runs,
+even at the weaker significance level.  Here is an example report showing
+no significant difference:
 
 ```
 TODO: example results here
 ```
-## Comparing benchmark runs
+If a difference is reported, look for ways to reduce the variation in your 
+environment.  Here is an example report from a noisy environment.
+```
+TODO: example results here
+```
+
+## ComparingBenchmark Runs
 
 ### Comparing two branches
 
