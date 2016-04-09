@@ -121,7 +121,6 @@ The development of the benchmark suite itself can be more difficult than develop
 - don't hardcode opsPerSample
 - Don't hardccode numSamples
 - test for too much memory usage
-- format should overflow with *
 - document "quieting your environment"
 - suite name should just export name
 - write test cases
