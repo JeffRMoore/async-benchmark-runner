@@ -20,11 +20,17 @@ export const benchmarks = [
   }
 ];
 ```
-This creates a syncronous benchmark that does nothing.  Place this in a file in your project `called benchmarks/suite.js`.  (This can be changed.)
+This creates a synchronous benchmark that does nothing.  Place this in a file in your project called `benchmarks/suite.js`.  (This can be changed.)
 
 Run the benchmark suite via the cli utility:
 ```
 ./node_modules/.bin/run-benchmark
+```
+
+The results will be saved to aunique json file in the `benchmark-results` folder.  (This can be changed.)  A result report will be output:
+
+```
+TODO: example results here
 ```
 
 Here is the equivelent simplest possible Asynchronous benchmark:
@@ -40,9 +46,44 @@ export const benchmarks = [
   }
 ];
 ```
-An asyncronous benchmark must return a promise.  The measurement interval will not be completed until that promise resolves.
+An asynchronous benchmark must return a promise.  The measurement interval will not be completed until that promise resolves.
 
-## Benchmark Suite
+The results of running the benchmark will look like this
+
+```
+TODO: example results here
+```
+
+Note that asynchronous benchmarks will be prefixed by a * in the result report.
+## Creating a "quiet" environment for running benchmarks
+Comparing different runs of the same benchmark requires that the conditions under which each are run to be similiar.
+You will acheive better results if you eliminate and exit any extranious programs on the machine you are running your
+tests on.  Joe Bob's animated GIF storm in Slack may be amusing, but you do not want it to throw off your benchmarks.
+To check your environment, run the same benchmark suite twice
+```
+./node_modules/.bin/run-benchmark
+./node_modules/.bin/run-benchmark
+```
+Then use the analyze-benchmark tool with a high sensativity to compare the benchmark results.
+```
+./node_modules/.bin/analyze-benchmark --significance-threshold=0.50
+```
+analyze-benchmark should report no significant difference between the runs.
+
+```
+TODO: example results here
+```
+## Comparing benchmark runs
+
+### Comparing two branches
+
+### Comparing work in progress
+
+Use stash
+
+### Comparing two tags
+
+## Authoring a Benchmark Suite
 A benchmark suite is an array of benchmark definition objects.  A benchmark definition is a simple javascript object.  Here is an example of the simplest possible benchmark suite.
 
 There are two types of benchmark, one for synchronous benchmarks and one for asynchronous benchmarks.  Both types share the following fields:
@@ -56,7 +97,7 @@ There are two types of benchmark, one for synchronous benchmarks and one for asy
 ## Benchmarking challenges under v8
 Javascript is a dynamic language.  V8 gathers information about code as it runs, attempting to apply optimizations where they will have the most impact and trying not to let the cost of optimizing to outweigh the gains.  This can make creating and interpreting benchmarks under node difficult.
 
-## Measuring memory usage
+## Measuring Memory Usage
 
 ## Building and Benchmarking your Application
 Using ABR in a non-trivial context is likely to require significant work on your project's build tooling.  The benchmarks should be run against the final built version of your code.  Benchmarks should also be run with `NODE_ENV` set to `production`.  You may also have a specialized standard environment in which to run your benchmark suite.
