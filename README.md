@@ -61,4 +61,27 @@ Tooling such as `node-babel`, while helpful for developement will significantly 
 
 The development of the benchmark suite itself can be more difficult than developing code in the system under test.  Tools that improve the interactiveity of the code-test cycle may skew benchmark results and should be considered carefully.
 
-## Roadmap
+## Roadmap / TODO
+
+- Update getting started docs
+- Document running with ENV production
+- Implement measurement event listener
+- Help cli option
+- split compare report into separate memory and time so change colummn can be added
+- progress indicator
+- opt-deopt debugger using event listener
+- write tests for benchmarks
+- use this for benchmark state
+- don't hardcode opsPerSample
+- Don't hardccode numSamples
+- test for too much memory usage
+- format should overflow with *
+- document "quieting your environment"
+- suite name should just export name
+- write test cases
+- add memory capture enabled indicator to results
+- Add confidence level to non-compare reports
+- rename benchmarks to benchmark
+- refactor stats to isolate dependencies
+- use destructuring for stats
+- extract MOE test code to stats
