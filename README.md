@@ -86,7 +86,6 @@ The development of the benchmark suite itself can be more difficult than develop
 - write test cases
 - add memory capture enabled indicator to results
 - Add confidence level to non-compare reports
-- rename benchmarks to benchmark
 - refactor stats to isolate dependencies
 - use destructuring for stats
 - extract MOE test code to stats
