@@ -12,7 +12,7 @@ const argv = parseArgs(process.argv.slice(2));
 
 const suiteFile = path.resolve(
   process.cwd(),
-  argv.suite ? argv.suite : 'benchmark\suite'
+  argv.suite ? argv.suite : 'benchmark/suite'
 );
 const resultDir = path.resolve(
   process.cwd(),
