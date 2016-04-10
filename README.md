@@ -122,15 +122,80 @@ environment.  Here is an example report from a noisy environment.
 TODO: example results here
 ```
 
-## ComparingBenchmark Runs
+## Comparing Benchmark Runs
+
+As seen in the last section the analyze-benchmark command can compare the 
+last two benchmark runs.  It can also be given explicit paths to two
+benchmark data files.
+```
+./node_modules/.bin/analyze-benchmark 1-benchmark.json 2-benchmark.json
+```
+The order of the parameters do not matter, the comparison report always
+treats the older run as the baseline result and the newer run as the
+result under test.
 
 ### Comparing two branches
 
+Here is an example series of commands to compare two branches.
+```
+git checkout master
+./node_modules/.bin/run-benchmark
+./node_modules/.bin/run-benchmark
+```
+Check the environment and take a baseline result.
+```
+git checkout feature-branch
+./node_modules/.bin/run-benchmark
+```
+Take a result for the branch to be tested.
+```
+./node_modules/.bin/analyze-benchmark
+```
+compare the two.
+
 ### Comparing work in progress
 
-Use stash
+Here is an example of benchmarking work which is not yet checked in.
+```
+git stash
+./node_modules/.bin/run-benchmark
+./node_modules/.bin/run-benchmark
+```
+Stash away pending changes, check the environment and take a baseline result.
+```
+git apply
+./node_modules/.bin/run-benchmark
+```
+Bring back the pending work and take a result for the branch to be tested.
+```
+./node_modules/.bin/analyze-benchmark
+```
+compare the results.
 
-### Comparing two tags
+### Comparing current work against a prior tagged release
+
+Here is an example of benchmarking new work against a tagged prior release.
+```
+git checkout -b v2benchmark v2.0.0
+./node_modules/.bin/run-benchmark
+./node_modules/.bin/run-benchmark
+```
+Create a new branch based on a prior version, check the environment
+and take a baseline result.
+```
+git checkout master
+./node_modules/.bin/run-benchmark
+```
+Test master against the prior release.
+```
+./node_modules/.bin/analyze-benchmark
+```
+compare the results.
+
+```
+git branch -d v2benchmark
+```
+Clean up the temporary branch when done.
 
 ## Authoring a Benchmark Suite
 A benchmark suite is an array of benchmark definition objects.  A benchmark
