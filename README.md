@@ -101,7 +101,7 @@ and will only show results from benchmarks that are significantly different.
 We can use this to measure environmental variation because two runs of
 the same benchmark should not be signficantly different.
 
-The default significance threshold is 5% (p < 0.5) and indicates less than
+The default significance threshold is 5% (p < 0.05) and indicates less than
 5% chance of false significance.  To increase the sensativity of our
 test of our environment we increase the statisitical signficance threshold
 to 50% via the `--signficance-threshold` parameter.
@@ -142,12 +142,19 @@ git checkout master
 ./node_modules/.bin/run-benchmark
 ./node_modules/.bin/run-benchmark
 ```
-Check the environment and take a baseline result.
+Switch to the master branch and take a baseline result.
+
+```
+./node_modules/.bin/analyze-benchmark --significance-threshold=0.50
+```
+Check the current environment
+
 ```
 git checkout feature-branch
 ./node_modules/.bin/run-benchmark
 ```
 Take a result for the branch to be tested.
+
 ```
 ./node_modules/.bin/analyze-benchmark
 ```
@@ -161,7 +168,13 @@ git stash
 ./node_modules/.bin/run-benchmark
 ./node_modules/.bin/run-benchmark
 ```
-Stash away pending changes, check the environment and take a baseline result.
+Stash away pending changes and take a baseline result.
+
+```
+./node_modules/.bin/analyze-benchmark --significance-threshold=0.50
+```
+Check the current environment
+
 ```
 git apply
 ./node_modules/.bin/run-benchmark
@@ -180,8 +193,13 @@ git checkout -b v2benchmark v2.0.0
 ./node_modules/.bin/run-benchmark
 ./node_modules/.bin/run-benchmark
 ```
-Create a new branch based on a prior version, check the environment
-and take a baseline result.
+Create a new branch based on a prior version and take a baseline result.
+
+```
+./node_modules/.bin/analyze-benchmark --significance-threshold=0.50
+```
+Check the current environment
+
 ```
 git checkout master
 ./node_modules/.bin/run-benchmark
