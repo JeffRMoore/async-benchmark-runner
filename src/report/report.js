@@ -55,10 +55,10 @@ export function reportResult(
     '-'.repeat(memoryColumnSize)
   );
   benchmarkResult.results.forEach(result => {
-    const time = Math.round(mean(result.timingSamples));
-    const timeMoe = Math.round(marginOfError(result.timingSamples));
-    const memory = Math.round(mean(result.memorySamples));
-    const memoryMoe = Math.round(marginOfError(result.memorySamples));
+    const time = Math.round(mean(result.samples.time));
+    const timeMoe = Math.round(marginOfError(result.samples.time));
+    const memory = Math.round(mean(result.samples.memory));
+    const memoryMoe = Math.round(marginOfError(result.samples.memory));
     const asyncColumn =
       formatLeft(result.isAsynchronous ? '*' : '', asyncColumnSize);
     const benchmarkColumn =

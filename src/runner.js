@@ -29,6 +29,11 @@ export type ASynchronousBenchmark =
 export type Benchmark = SynchronousBenchmark | ASynchronousBenchmark;
 
 /**
+ * A set of sample measurements
+ */
+export type Samples = Array<number>;
+
+/**
  * Result of running one benchmark
  */
 export type BenchmarkResult =
@@ -37,8 +42,7 @@ export type BenchmarkResult =
   isAsynchronous: boolean;
   opsPerSample: number;
   numSamples: number;
-  timingSamples: Array<number>;
-  memorySamples: Array<number>;
+  samples: { [measurementName: string] : Samples };
 }
 
 /**
@@ -157,8 +161,10 @@ function runBenchmark(
     isAsynchronous: benchmark.startRunning ? true : false,
     opsPerSample: 1000,
     numSamples: 100,
-    timingSamples: [],
-    memorySamples: []
+    samples: {
+      'time': [],
+      'memory': []
+    }
   };
 
   const Err = setupBenchmark(benchmark);
@@ -234,7 +240,7 @@ function scheduleNextSample(
  * Does the result contain all required samples?
  */
 function isSamplingComplete(result: BenchmarkResult) {
-  return result.timingSamples.length >= result.numSamples;
+  return result.samples.time.length >= result.numSamples;
 }
 
 /**
@@ -325,10 +331,10 @@ function collectSynchronousSample(
  * Record a sample memory and time into a benchmark result
  */
 function recordSample(benchmarkResult, elapsedTime, memoryUsed) {
-  benchmarkResult.timingSamples.push(
+  benchmarkResult.samples.time.push(
     Math.round(elapsedTime / benchmarkResult.opsPerSample)
   );
-  benchmarkResult.memorySamples.push(
+  benchmarkResult.samples.memory.push(
     Math.round(memoryUsed / benchmarkResult.opsPerSample)
   );
 }

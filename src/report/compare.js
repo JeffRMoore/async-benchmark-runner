@@ -75,8 +75,8 @@ export function compareMemoryResults(
   let insignificantBenchmarks = 0;
   for (let i = 0; i < baseResult.results.length; i++) {
     const memory = tTest(
-      baseResult.results[i].memorySamples,
-      testResult.results[i].memorySamples,
+      baseResult.results[i].samples.memory,
+      testResult.results[i].samples.memory,
       confidenceLevel
     );
 
@@ -94,7 +94,7 @@ export function compareMemoryResults(
     const memoryColumn =
       formatRight(memoryDifference, memorySize) +
       memoryUnits;
-    const baseMean = mean(baseResult.results[i].timingSamples);
+    const baseMean = mean(baseResult.results[i].samples.memory);
     const change = Math.round(memory.meanDifference * toPercent / baseMean);
     const interval = memory.confidenceInterval[1] - memory.meanDifference;
     const marginOfError = Math.round(interval * toPercent / baseMean);
@@ -177,8 +177,8 @@ export function compareTimeResults(
   for (let i = 0; i < baseResult.results.length; i++) {
 
     const time = tTest(
-      baseResult.results[i].timingSamples,
-      testResult.results[i].timingSamples,
+      baseResult.results[i].samples.time,
+      testResult.results[i].samples.time,
       confidenceLevel
     );
 
@@ -196,7 +196,7 @@ export function compareTimeResults(
     const timeColumn =
       formatRight(timeDifference, timeSize) +
       timeUnits;
-    const baseMean = mean(baseResult.results[i].timingSamples);
+    const baseMean = mean(baseResult.results[i].samples.time);
     const change = Math.round(time.meanDifference * toPercent / baseMean);
     const interval = time.confidenceInterval[1] - time.meanDifference;
     const marginOfError = Math.round(interval * toPercent / baseMean);
