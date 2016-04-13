@@ -42,19 +42,11 @@ export type BenchmarkResult =
 }
 
 /**
- * Options controlling how benchmarks are run
- */
-export type BenchmarkingOptions =
-{
-}
-
-/**
  * Result of running a suite of benchmarks
  */
 export type BenchmarkSuiteResult =
 {
   name: string;
-  options: BenchmarkingOptions;
   startTime: number;
   results: Array<BenchmarkResult>;
 }
@@ -68,13 +60,11 @@ type rejectFn = (value: any) => void;
  */
 export function startBenchmarking(
   name: string,
-  benchmarkSuite: Array<Benchmark>,
-  options: BenchmarkingOptions
+  benchmarkSuite: Array<Benchmark>
 ) : Promise {
   return new Promise((resolve: resolveFn, reject: rejectFn) => {
     const suiteResult : BenchmarkSuiteResult = {
       name,
-      options,
       startTime: Date.now(),
       results: []
     };
