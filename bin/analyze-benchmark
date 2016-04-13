@@ -6,7 +6,8 @@ const fs = require('fs');
 const path = require('path');
 
 const reportResult = require('../src/report/report').reportResult;
-const compareResults = require('../src/report/compare').compareResults;
+const compareMemoryResults = require('../src/report/compare').compareMemoryResults;
+const compareTimeResults = require('../src/report/compare').compareTimeResults;
 
 const defaultSignificanceThreshold = 0.05;
 const defaultConfidenceLevel = 0.95;
@@ -58,7 +59,14 @@ if (suiteResults.length === 2) {
   const confidenceLevel =
     argv['confidence-level'] !== undefined ?
       Number(argv['confidence-level']) : defaultConfidenceLevel;
-  compareResults(
+  compareMemoryResults(
+    suiteResults[0],
+    suiteResults[1],
+    console.log,
+    significanceThreshold,
+    confidenceLevel
+    );
+  compareTimeResults(
     suiteResults[0],
     suiteResults[1],
     console.log,

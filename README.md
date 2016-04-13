@@ -266,7 +266,6 @@ developing code in the system under test.  Tools that improve the interactivity
 - Document running with ENV production
 - Implement measurement event listener
 - Help cli option
-- split compare report into separate memory and time so change colummn can be added
 - progress indicator
 - opt-deopt debugger using event listener
 - write tests for benchmarks
