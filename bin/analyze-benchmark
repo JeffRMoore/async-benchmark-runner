@@ -54,7 +54,7 @@ if (suiteResults.length === 1) {
 if (suiteResults.length === 2) {
   const significanceThreshold =
     argv['significance-threshold'] !== undefined ?
-      Number(argv['significance-threshold']) : defaultConfidenceLevel;
+      Number(argv['significance-threshold']) : defaultSignificanceThreshold;
   const confidenceLevel =
     argv['confidence-level'] !== undefined ?
       Number(argv['confidence-level']) : defaultConfidenceLevel;
