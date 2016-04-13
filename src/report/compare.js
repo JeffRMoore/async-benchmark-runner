@@ -7,11 +7,11 @@ import type {
   BenchmarkSuiteResult
 } from '../runner';
 import {
-  tTest
-} from 'experiments.js';
-import {
   mean
 } from 'simple-statistics';
+import {
+  tTest
+} from 'experiments.js';
 
 const defaultSignificanceThreshold = 0.05;
 const defaultConfidenceLevel = 0.95;
@@ -79,7 +79,7 @@ export function compareMemoryResults(
       testResult.results[i].memorySamples,
       confidenceLevel
     );
-    
+
     if (memory.probabilityLevel > significanceThreshold) {
       insignificantBenchmarks += 1;
       continue;
