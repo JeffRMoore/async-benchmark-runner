@@ -13,7 +13,7 @@ npm install --save-dev async-benchmark-runner
 ## Getting Started
 Here is an example of the simplest possible benchmark suite:
 ```
-exports.benchmarkSuiteName = 'Simple Suite';
+exports.name = 'Simple Suite';
 
 exports.benchmarks = [
   {
@@ -55,7 +55,7 @@ benchmark design or environment setup.
 
 Here is the equivelent simplest possible asynchronous benchmark:
 ```
-exports.benchmarkSuiteName = 'Simple Suite';
+exports.name = 'Simple Suite';
 
 exports.benchmarks = [
   {
@@ -275,7 +275,6 @@ developing code in the system under test.  Tools that improve the interactivity
 - Don't hardccode numSamples
 - test for too much memory usage
 - document "quieting your environment"
-- suite name should just export name
 - write test cases
 - add memory capture enabled indicator to results
 - Add confidence level to non-compare reports

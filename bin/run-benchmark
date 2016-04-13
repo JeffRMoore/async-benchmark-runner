@@ -21,7 +21,12 @@ const resultDir = path.resolve(
 
 const benchmarkSuite = require(suiteFile);
 
-console.log('Running benchmark suite from', path.relative(process.cwd(), suiteFile));
+console.log(
+  'Running',
+  benchmarkSuite.name,
+  'from',
+  path.relative(process.cwd(), suiteFile)
+);
 startBenchmarking(benchmarkSuite.name, benchmarkSuite.benchmarks).then( results => {
   reportResult(results, console.log);
   mkdirp(resultDir, (err) => {

@@ -1,4 +1,4 @@
-exports.benchmarkSuiteName = 'Simple Suite';
+exports.name = 'Simple Suite';
 
 exports.benchmarks = [
   {
