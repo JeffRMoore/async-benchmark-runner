@@ -262,21 +262,22 @@ developing code in the system under test.  Tools that improve the interactivity
 ## Roadmap / TODO
 
 - fix --expose-gc parameter for linux shebang issue
-- Update getting started docs
-- Document running with ENV production
-- Implement measurement event listener
 - Help cli option
 - progress indicator
-- opt-deopt debugger using event listener
-- write tests for benchmarks
 - use this for benchmark state
 - don't hardcode opsPerSample
-- Don't hardccode numSamples
-- test for too much memory usage
-- document "quieting your environment"
-- write test cases
-- add memory capture enabled indicator to results
-- Add confidence level to non-compare reports
+- don't hardccode numSamples
+- check for too much memory usage
+- add confidence level to non-compare reports
 - refactor stats to isolate dependencies
 - use destructuring for stats
 - extract MOE test code to stats
+- implement runBenchmarkTest
+- implement startBenchmarkTest
+- automatically add node cli parameter for --debug options
+- figure out why stdout flushes differently when piped
+- fix compare reports for added or removed benchmarks
+- write test cases
+- document using top -u -s 10 in "quiet"
+- change algorithm to interleave sampling
+- add magnitude-threshold parameter

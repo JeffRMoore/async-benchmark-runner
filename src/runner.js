@@ -56,6 +56,7 @@ export type BenchmarkSuiteResult =
 {
   name: string;
   startTime: number;
+  dimensions: Array<string>;
   results: Array<BenchmarkResult>;
 }
 
@@ -78,6 +79,7 @@ export function startBenchmarking(
     const suiteResult : BenchmarkSuiteResult = {
       name,
       startTime: Date.now(),
+      dimensions: dimensions.map(dimension => dimension.name),
       results: []
     };
     const suite = flatten(benchmarkSuite);
