@@ -177,12 +177,6 @@ function runBenchmark(
     }, Object.create(null))
   };
 
-  const Err = setupBenchmark(benchmark);
-  if (Err) {
-    reject(Err);
-    return;
-  }
-
   const resolveBenchmark = (finalResult: BenchmarkResult) => {
     suiteResult.results.push(finalResult);
     scheduleNextBenchmark(resolve, reject, benchmarkSuite, suiteResult);
@@ -215,12 +209,7 @@ function scheduleNextSample(
   result: BenchmarkResult
 ): void {
   if (isSamplingComplete(result)) {
-    const Err = tearDownBenchmark(benchmark);
-    if (Err) {
-      reject(Err);
-    } else {
-      resolve(result);
-    }
+    resolve(result);
     return;
   }
   if (benchmark.run) {
@@ -281,6 +270,12 @@ function collectAsynchronousSample(
   const promises = new Array(result.opsPerSample);
   const ending = new Array(dimensions.length);
 
+  const ErrSetup = setupBenchmark(benchmark);
+  if (ErrSetup) {
+    reject(ErrSetup);
+    return;
+  }
+
   cleanUpMemory();
 
   const starting = startMeasuring();
@@ -297,6 +292,13 @@ function collectAsynchronousSample(
   // take measurements when all promises have been resolved
   Promise.all(promises).then(() => {
     recordMeasurements(result, stopMeasuring(starting, ending));
+
+    const ErrTearDown = tearDownBenchmark(benchmark);
+    if (ErrTearDown) {
+      reject(ErrTearDown);
+      return;
+    }
+
     scheduleNextSample(resolve, reject, benchmark, result);
   });
 }
@@ -314,6 +316,12 @@ function collectSynchronousSample(
   // Pre-allocate to avoid allocating memory during run
   const ending = new Array(dimensions.length);
 
+  const ErrSetup = setupBenchmark(benchmark);
+  if (ErrSetup) {
+    reject(ErrSetup);
+    return;
+  }
+
   cleanUpMemory();
 
   const starting = startMeasuring();
@@ -328,6 +336,13 @@ function collectSynchronousSample(
   }
 
   recordMeasurements(result, stopMeasuring(starting, ending));
+
+  const ErrTearDown = tearDownBenchmark(benchmark);
+  if (ErrTearDown) {
+    reject(ErrTearDown);
+    return;
+  }
+
   scheduleNextSample(resolve, reject, benchmark, result);
 }
 
