@@ -378,7 +378,7 @@ describe('NO-OP Asynchronous', () => {
 - fix --expose-gc parameter for linux shebang issue
 - Help cli option
 - progress indicator
-- use this for benchmark state
+- use this for benchmark state (class)
 - don't hardcode opsPerSample
 - don't hardccode numSamples
 - check for too much memory usage
@@ -390,6 +390,12 @@ describe('NO-OP Asynchronous', () => {
 - figure out why stdout flushes differently when piped
 - fix compare reports for added or removed benchmarks
 - write test cases
-- document using top -u -s 10 in "quiet"
+- document using top -u -s 10 in "jitter"
 - change algorithm to interleave sampling
 - add magnitude-threshold parameter
+- sort results by magnitude of change in comparison report
+- calibration parameter for comparison report
+- handle benchmarks that are expected to throw an error
+- use mode instead of mean to descibribe memory usage (remove MOE)
+- extract calibration benchmarks to their own module
+- debug detected inefficiency in babel compiled es6 code
