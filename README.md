@@ -332,6 +332,12 @@ developing code in the system under test.  Tools that improve the interactivity
  of the code-test cycle may skew benchmark results and should be considered 
  carefully.
 
+## Testing your Benchmarks
+
+See Dick run.  See Dick run to Jane's desk claiming amazing performance
+improvements.  See Dick turn red when Jane points out that his benchmark is
+broken.  Don't be Dick.  Unit test your benchmarks.
+
 ## Roadmap / TODO
 
 - fix --expose-gc parameter for linux shebang issue
