@@ -1,11 +1,12 @@
 # Async Benchmark Runner
 A benchmark runner for node focusing on measuring elapsed time and memory usage
 for promise using asynchronous code. ABR is intended to be run as a part of a
-performance regression test suite.  It is not intended for microbenchmarking or
-load testing.
+performance regression test suite.  ABR is intended to help answer questions
+like "have performance characteristics changed between releases" or 
+"does this change have an impact on performance?"
 
 ABR measures mean elapsed time, which does not give an accurate assessment of
-latency.
+latency.  It is not intended for load testing.
 
 ABR is intended to benchmark fine grained operations.  The intent is that ABR
 should not only tell you that performance characteristcs have changed, but
@@ -14,14 +15,13 @@ have significance to your application.  It generally possible to create more
 benchmarks of this type than it is to create load testing or system level
 benchmarks.
 
-Candidate operations for benchmarking should be identified by profiling and monitoring
-your application.
+Think of ABR as a performance unit test, not as a performance acceptance test.
+
+Candidate operations for benchmarking should be identified by profiling and 
+monitoring your application.
 
 ABR is intended to be easy to use and produce repeatable results, sacrificing 
 some level of accuracy toward this goal.
-
-ABR is intended to help answer questions like "have performance characteristics
-changed between releases" or "does this change have an impact on performance?"
 
 ## Installing
 
