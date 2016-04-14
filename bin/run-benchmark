@@ -25,7 +25,34 @@ const resultDir = path.resolve(
 
 const benchmarkSuite = require(suiteFile);
 
-const dimensions = [MemoryDimension, TimeDimension];
+let isDebugging = false;
+
+if (argv['debug-gc'] !== undefined) {
+  // --trace_gc
+  isDebugging = true;
+}
+
+if (argv['debug-opt'] !== undefined) {
+  // --trace_opt
+  isDebugging = true;
+}
+
+if (argv['debug-deopt'] !== undefined) {
+  //  --trace_deopt
+  isDebugging = true;
+}
+
+const dimensions = [];
+
+if (isDebugging) {
+  dimensions.push(DebugDimension);
+}
+
+if (global.gc) {
+  dimensions.push(MemoryDimension);
+}
+
+dimensions.push(TimeDimension);
 
 console.log(
   'Running',
