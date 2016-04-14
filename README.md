@@ -386,8 +386,6 @@ describe('NO-OP Asynchronous', () => {
 - refactor stats to isolate dependencies
 - use destructuring for stats
 - extract MOE test code to stats
-- implement runBenchmarkTest
-- implement startBenchmarkTest
 - automatically add node cli parameter for --debug options
 - figure out why stdout flushes differently when piped
 - fix compare reports for added or removed benchmarks
