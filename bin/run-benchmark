@@ -7,6 +7,10 @@ const mkdirp = require('mkdirp');
 const parseArgs = require('minimist');
 const startBenchmarking = require('../src/runner').startBenchmarking;
 const reportResult = require('../src/report/report').reportResult;
+
+const TimeDimension = require('../src/dimension/time').TimeDimension;
+const MemoryDimension = require('../src/dimension/memory').MemoryDimension;
+const DebugDimension = require('../src/dimension/debug').DebugDimension;
   
 const argv = parseArgs(process.argv.slice(2));
 
@@ -21,13 +25,19 @@ const resultDir = path.resolve(
 
 const benchmarkSuite = require(suiteFile);
 
+const dimensions = [MemoryDimension, TimeDimension];
+
 console.log(
   'Running',
   benchmarkSuite.name,
   'from',
   path.relative(process.cwd(), suiteFile)
 );
-startBenchmarking(benchmarkSuite.name, benchmarkSuite.benchmarks).then( results => {
+startBenchmarking(
+  benchmarkSuite.name, 
+  benchmarkSuite.benchmarks,
+  dimensions
+).then( results => {
   reportResult(results, console.log);
   mkdirp(resultDir, (err) => {
     if (err) {

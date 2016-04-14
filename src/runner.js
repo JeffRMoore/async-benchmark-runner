@@ -1,4 +1,8 @@
 /* @flow */
+import type {
+  Dimension
+} from './dimension/type';
+
 import flatten from 'lodash.flatten';
 
 /**
@@ -55,52 +59,21 @@ export type BenchmarkSuiteResult =
   results: Array<BenchmarkResult>;
 }
 
-/**
- * Describe a measurement dimension
- */
-export type Dimension<T> = {
-  name: string;
-  displayName: string;
-  units: string;
-  startMeasuring: () => T;
-  stopMeasuring: (start: T) => number;
-}
-
 type resolveFn = (value: any) => void;
 
 type rejectFn = (value: any) => void;
 
-const dimensions: Array<Dimension> = [
-  {
-    name: 'time',
-    displayName: 'Elapsed Time',
-    units: 'ns',
-    startMeasuring: () => process.hrtime(),
-    stopMeasuring: startTime => {
-      const nanoSecondsPerSecond = 1e9;
-      const elapsed = process.hrtime(startTime);
-      return elapsed[0] * nanoSecondsPerSecond + elapsed[1];
-    }
-  },
-  {
-    name: 'memory',
-    displayName: 'memory',
-    units: 'b',
-    startMeasuring: () => process.memoryUsage(),
-    stopMeasuring: startMemory => {
-      const memory = process.memoryUsage();
-      return memory.heapUsed - startMemory.heapUsed;
-    }
-  }
-];
+let dimensions: Array<Dimension> = [];
 
 /**
  * Start the process of running a suite of benchmarks
  */
 export function startBenchmarking(
   name: string,
-  benchmarkSuite: Array<Benchmark>
+  benchmarkSuite: Array<Benchmark>,
+  dimensionList: Array<Dimension>
 ) : Promise {
+  dimensions = dimensionList;
   return new Promise((resolve: resolveFn, reject: rejectFn) => {
     const suiteResult : BenchmarkSuiteResult = {
       name,
@@ -196,10 +169,10 @@ function runBenchmark(
     isAsynchronous: benchmark.startRunning ? true : false,
     opsPerSample: 1000,
     numSamples: 100,
-    samples: {
-      'time': [],
-      'memory': []
-    }
+    samples: dimensions.reduce((samples, dimension) => {
+      samples[dimension.name] = [];
+      return samples;
+    }, Object.create(null))
   };
 
   const Err = setupBenchmark(benchmark);
