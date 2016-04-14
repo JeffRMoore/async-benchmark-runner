@@ -338,6 +338,41 @@ See Dick run.  See Dick run to Jane's desk claiming amazing performance
 improvements.  See Dick turn red when Jane points out that his benchmark is
 broken.  Don't be Dick.  Unit test your benchmarks.
 
+ABR provides helper functions for testing your benchmarks. The
+`runBenchmarkTest` function accepts a list of benchmarks and a benchmark
+name as parameters.  It then runs the benchmark and returns the result
+of the run function.  It is recommended that you construct your run
+function so that it returns a value which can be tested to determine if the
+benchmark is calculating the correct result.
+
+Here is an example of testing our simplest synchronous benchmark test.
+
+```
+import { benchmarks } from '../suite';
+import { runBenchmarkTest } from 'async-benchmark-runner';
+describe('NO-OP Synchronous', () => {
+  it('returns false', () => {
+    const result = runBenchmarkTest(benchmarks, 'NO-OP Synchronous');
+    expect(result).to.equal(false);
+  });
+});
+```
+There is also a `startBenchmarkTest` function which returns a promise
+received from calling the startRunning function of an asynchronous
+benchmark.  Similarly, construct your benchmark to resolve this promise
+to a testable value.  Here is an example asynchronous benchmark test:
+
+```
+import { benchmarks } from '../suite';
+import { startBenchmarkTest } from 'async-benchmark-runner';
+describe('NO-OP Asynchronous', () => {
+  it('returns false', async () => {
+    const result = await startBenchmarkTest(benchmarks, 'NO-OP Asynchronous');
+    expect(result).to.equal(false);
+  });
+});
+```
+
 ## Roadmap / TODO
 
 - fix --expose-gc parameter for linux shebang issue

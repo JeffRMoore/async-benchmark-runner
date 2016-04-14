@@ -4,7 +4,7 @@
   "author": "Jeff Moore <jeff@procata.com>",
   "description": "Benchmark runner for node focusing on measuring asynchronous code using promises.",
   "license": "MIT",
-  "main": "src/runner.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/JeffRMoore/async-benchmark-runner.git"
