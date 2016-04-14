@@ -82,7 +82,7 @@ Writing results to benchmark-results/1460240762239-benchmark.json
 Asynchronous benchmark names will be prefixed by an asterisk in the 
 result report.
 
-## Creating a Quiet Environment for Running Benchmarks
+## Eliminating System Jitter
 Comparing different runs of the same benchmark requires that the conditions
 under which each are run to be similiar.  You will acheive better results if you
 eliminate and exit any extranious programs on the machine you are running your
@@ -237,7 +237,61 @@ attempting to apply optimizations where they will have the most impact and
 trying not to let the cost of optimizing to outweigh the gains.  This can make
 creating and interpreting benchmarks under node difficult.
 
-## Measuring Memory Usage
+## Garbage Collection and Measuring Memory Usage
+
+Node is a garbage collected environment.  This can be the source of significant
+jitter.  This is bad not only for benchmarking but for application
+performance.  The amount of memory consumed can lead to garbage collection
+pressure and increased jitter.
+
+When multiple tasks are running asynchronously, they hold system resources.  An
+important such resource is memory.  The more memory held by each task,
+the fewer concurrant tasks can be attempted.
+
+ABR operates under the hypothesis that measuring memory usage can act as a proxy
+for how many concurrant tasks can be attempted and how much jitter a system
+might experience due to garbage collection.
+
+In order to make accurate measurements of memory and to avoid garbage collection
+jitter, ABR attempts to control when garbage collection occurs, forcing it outside
+of measurement collecting periods.  This is done by using the `gc` function
+available when node is run with the `--expose_gc` option.
+
+If running multiple operations during a sample triggers a garbage collection,
+the results of timing that sample will be less accurate, and the memory usage
+number for that sample will be wrong.  Future versions of ABR will attempt
+to test memory usage and ensure that the number of operations per sample does
+not trigger a garbage collection.
+
+There is no way to programmatically detect if a garbage collection occurred
+during an interval, so ABR focuses on prevention.
+
+ABR has an option for debugging a benchmark to determine if garbage collection
+is happening during measurement.  Passing the `--debug-gc` option to 
+`run-benchmark` will trigger a debugging mode which outputs begging and ending
+indicators for measurement periods.  Using the `--trace_gc` option for node,
+one can determine when garbage collection activity appears within a measurement
+interval.
+
+Example of an uninterrupted measurement interval:
+```
+TODO
+```
+Example of a measurement interval interrupted by garbage collection:
+```
+TODO
+```
+
+Note that this output cannot be piped to a file or other program as there is a
+buffering or flushing change in node which causes the output to be presented
+in a different order.  This means that the debugging cannot at this time be
+scripted until the root cause of this behavior is discovered.
+
+Currently ABR cannot add the `--trace_gc` option during `run-benchmark`.  To
+use this feature, you must edit the file directly adding the option to the
+shebang line for the script.  Options on the shebang line are known to not
+be supoorted in Linux.  Future ABR version will use a shell script instead
+of a node script to launch benchmarks to eliminate this issue.
 
 ## Building and Benchmarking your Application
 Using ABR in a non-trivial context is likely to require significant work on your 
