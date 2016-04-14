@@ -55,9 +55,44 @@ export type BenchmarkSuiteResult =
   results: Array<BenchmarkResult>;
 }
 
+/**
+ * Describe a measurement dimension
+ */
+export type Dimension<T> = {
+  name: string;
+  displayName: string;
+  units: string;
+  startMeasuring: () => T;
+  stopMeasuring: (start: T) => number;
+}
+
 type resolveFn = (value: any) => void;
 
 type rejectFn = (value: any) => void;
+
+const dimensions: Array<Dimension> = [
+  {
+    name: 'time',
+    displayName: 'Elapsed Time',
+    units: 'ns',
+    startMeasuring: () => process.hrtime(),
+    stopMeasuring: startTime => {
+      const nanoSecondsPerSecond = 1e9;
+      const elapsed = process.hrtime(startTime);
+      return elapsed[0] * nanoSecondsPerSecond + elapsed[1];
+    }
+  },
+  {
+    name: 'memory',
+    displayName: 'memory',
+    units: 'b',
+    startMeasuring: () => process.memoryUsage(),
+    stopMeasuring: startMemory => {
+      const memory = process.memoryUsage();
+      return memory.heapUsed - startMemory.heapUsed;
+    }
+  }
+];
 
 /**
  * Start the process of running a suite of benchmarks
@@ -267,12 +302,13 @@ function collectAsynchronousSample(
   benchmark: ASynchronousBenchmark,
   result: BenchmarkResult
 ): void {
+  // Pre-allocate to avoid allocating memory during run
   const promises = new Array(result.opsPerSample);
+  const ending = new Array(dimensions.length);
 
   cleanUpMemory();
 
-  const startMemory = getStartMemory();
-  const startTime = getStartTime();
+  const starting = startMeasuring();
 
   try {
     // run the benchmark function and collect promises
@@ -285,12 +321,7 @@ function collectAsynchronousSample(
 
   // take measurements when all promises have been resolved
   Promise.all(promises).then(() => {
-
-    const elapsedTime = getTimeElapsed(startTime);
-    const memoryUsed = global.gc ? getMemoryUsed(startMemory) : 0;
-
-    recordSample(result, elapsedTime, memoryUsed);
-
+    recordMeasurements(result, stopMeasuring(starting, ending));
     scheduleNextSample(resolve, reject, benchmark, result);
   });
 }
@@ -305,10 +336,12 @@ function collectSynchronousSample(
   benchmark: SynchronousBenchmark,
   result: BenchmarkResult
 ) {
+  // Pre-allocate to avoid allocating memory during run
+  const ending = new Array(dimensions.length);
+
   cleanUpMemory();
 
-  const startMemory = getStartMemory();
-  const startTime = getStartTime();
+  const starting = startMeasuring();
 
   try {
     // run the benchmark function
@@ -319,55 +352,8 @@ function collectSynchronousSample(
     reject(e);
   }
 
-  const elapsedTime = getTimeElapsed(startTime);
-  const memoryUsed = global.gc ? getMemoryUsed(startMemory) : 0;
-
-  recordSample(result, elapsedTime, memoryUsed);
-
+  recordMeasurements(result, stopMeasuring(starting, ending));
   scheduleNextSample(resolve, reject, benchmark, result);
-}
-
-/**
- * Record a sample memory and time into a benchmark result
- */
-function recordSample(benchmarkResult, elapsedTime, memoryUsed) {
-  benchmarkResult.samples.time.push(
-    Math.round(elapsedTime / benchmarkResult.opsPerSample)
-  );
-  benchmarkResult.samples.memory.push(
-    Math.round(memoryUsed / benchmarkResult.opsPerSample)
-  );
-}
-
-/**
- * Read the current time, using the highest resolution timer at our disposal
- */
-function getStartTime() {
-  return process.hrtime();
-}
-
-/**
- * Determine how much time has passed in microseconds since an initial reading was taken
- */
-function getTimeElapsed(startTime) {
-  const nanoSecondsPerSecond = 1e9;
-  const elapsed = process.hrtime(startTime);
-  return elapsed[0] * nanoSecondsPerSecond + elapsed[1];
-}
-
-/**
- * Read the current memory usage
- */
-function getStartMemory() {
-  return process.memoryUsage();
-}
-
-/**
- * Determine how much memory has been used since an initial reading was taken
- */
-function getMemoryUsed(startMemory) {
-  const memory = process.memoryUsage();
-  return memory.heapUsed - startMemory.heapUsed;
 }
 
 /**
@@ -377,5 +363,47 @@ function getMemoryUsed(startMemory) {
 function cleanUpMemory() {
   if (global.gc) {
     global.gc();
+  }
+}
+
+/**
+ * Start measuring all requested dimensions in order
+ */
+function startMeasuring(): any {
+  const startingMeasurements = new Array(dimensions.length);
+  for (let i = 0; i < dimensions.length; i++) {
+    startingMeasurements[i] = dimensions[i].startMeasuring();
+  }
+  return startingMeasurements;
+}
+
+/**
+ * Take the final measurement of all requested dimensions in the reverse order
+ * from which they were started.
+ */
+function stopMeasuring(
+  startingMeasurements: Array<any>,
+  endingMeasurements: Array<number>
+): Array<number> {
+  for (let i = dimensions.length - 1; i >= 0; i--) {
+
+    /* eslint no-param-reassign:0 */
+    endingMeasurements[i] =
+      dimensions[i].stopMeasuring(startingMeasurements[i]);
+  }
+  return endingMeasurements;
+}
+
+/**
+ * Record the measurements from a set of dimensions
+ */
+function recordMeasurements(
+  result: BenchmarkResult,
+  finalMeasurements: Array<number>
+): void {
+  for (let i = 0; i < dimensions.length; i++) {
+    result.samples[dimensions[i].name].push(
+      Math.round(finalMeasurements[i] / result.opsPerSample)
+    );
   }
 }
