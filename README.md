@@ -375,7 +375,11 @@ describe('NO-OP Asynchronous', () => {
 
 ## Roadmap / TODO
 
+For next release
+- [critical] change algorithm to interleave sampling (large refactoring necessary for stability of results)
 - fix --expose-gc parameter for linux shebang issue
+
+Future
 - Help cli option
 - progress indicator
 - use this for benchmark state (class)
@@ -391,7 +395,6 @@ describe('NO-OP Asynchronous', () => {
 - fix compare reports for added or removed benchmarks
 - write test cases
 - document using top -u -s 10 in "jitter"
-- change algorithm to interleave sampling
 - add magnitude-threshold parameter
 - sort results by magnitude of change in comparison report
 - calibration parameter for comparison report
