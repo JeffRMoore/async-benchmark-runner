@@ -234,6 +234,10 @@ git branch -d v2benchmark
 ```
 Clean up the temporary branch when done.
 
+### Comparing the current version against the most recent prior version
+
+TODO
+
 ## Authoring a Benchmark Suite
 A benchmark suite is an array of benchmark definition objects.  A benchmark
 definition is a simple javascript object.  Here is an example of the simplest
@@ -335,8 +339,8 @@ developing code in the system under test.  Tools that improve the interactivity
 ## Testing your Benchmarks
 
 See Dick run.  See Dick run to Jane's desk claiming amazing performance
-improvements.  See Dick turn red when Jane points out that his benchmark is
-broken.  Don't be Dick.  Unit test your benchmarks.
+improvements.  See Dick's face turn red when Jane points out that his
+benchmark is broken.  Don't be Dick.  Unit test your benchmarks.
 
 ABR provides helper functions for testing your benchmarks. The
 `runBenchmarkTest` function accepts a list of benchmarks and a benchmark
