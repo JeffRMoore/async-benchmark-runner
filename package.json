@@ -1,6 +1,6 @@
 {
   "name": "async-benchmark-runner",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Jeff Moore <jeff@procata.com>",
   "description": "Benchmark runner for node focusing on measuring asynchronous code using promises.",
   "license": "MIT",
