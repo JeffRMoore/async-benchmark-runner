@@ -291,7 +291,7 @@ during an interval, so ABR focuses on prevention.
 
 ABR has an option for debugging a benchmark to determine if garbage collection
 is happening during measurement.  Passing the `--debug-gc` option to 
-`run-benchmark` will trigger a debugging mode which outputs begging and ending
+`run-benchmark` will trigger a debugging mode which outputs begining and ending
 indicators for measurement periods.  Using the `--trace_gc` option for node,
 one can determine when garbage collection activity appears within a measurement
 interval.
@@ -314,7 +314,8 @@ Currently ABR cannot add the `--trace_gc` option during `run-benchmark`.  To
 use this feature, you must edit the file directly adding the option to the
 shebang line for the script.  Options on the shebang line are known to not
 be supoorted in Linux.  Future ABR version will use a shell script instead
-of a node script to launch benchmarks to eliminate this issue.
+of a node script to launch benchmarks to eliminate this issue. 
+(see [#1](https://github.com/JeffRMoore/async-benchmark-runner/issues/1))
 
 ## Building and Benchmarking your Application
 Using ABR in a non-trivial context is likely to require significant work on your 
