@@ -254,11 +254,23 @@ asynchronous benchmarks.  Both types share the following fields:
 
 ### Benchmarking overhead
 
+TODO
+
 ## Benchmarking challenges under v8
 Javascript is a dynamic language.  V8 gathers information about code as it runs,
 attempting to apply optimizations where they will have the most impact and 
 trying not to let the cost of optimizing to outweigh the gains.  This can make
 creating and interpreting benchmarks under node difficult.
+
+Vyacheslav Egorov explains some of the perils in benchmarking against the
+optimizer in [Benchmarking and Performance](https://www.youtube.com/watch?v=65-RbBwZQdU)
+
+V8 has several stages of optimization.  Because ABR runs many cycles and takes many samples,
+it is not designed to benchmark code that does not also get repeatedly run in your
+application.  Do not use ABR to benchmark "initialization" code.
+
+Use profiling to identify repeated "hot" areas and create benchmarks that mirror those
+portions of your codebase.
 
 ## Garbage Collection and Measuring Memory Usage
 
