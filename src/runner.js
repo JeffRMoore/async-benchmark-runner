@@ -24,7 +24,7 @@ export type ASynchronousBenchmark =
   name: string;
   setUp?: () => void;
   tearDown?: () => void;
-  startRunning : () => Promise;
+  startRunning : () => Promise<*>;
 }
 
 /**
@@ -64,7 +64,7 @@ type resolveFn = (value: any) => void;
 
 type rejectFn = (value: any) => void;
 
-let dimensions: Array<Dimension> = [];
+let dimensions: Array<Dimension<*>> = [];
 
 /**
  * Start the process of running a suite of benchmarks
@@ -72,8 +72,8 @@ let dimensions: Array<Dimension> = [];
 export function startBenchmarking(
   name: string,
   benchmarkSuite: Array<Benchmark>,
-  dimensionList: Array<Dimension>
-) : Promise {
+  dimensionList: Array<Dimension<*>>
+) : Promise<*> {
   dimensions = dimensionList;
   return new Promise((resolve: resolveFn, reject: rejectFn) => {
     const suiteResult : BenchmarkSuiteResult = {
@@ -106,13 +106,13 @@ function populateInlineCaches(benchmarkSuite: Array<Benchmark>) {
     if (setupErr) {
       promises.push(Promise.reject(setupErr));
     }
-    if (benchmark.run) {
+    if (typeof benchmark.run === 'function') {
       benchmark.run();
       const tearDownErr = tearDownBenchmark(benchmark);
       if (tearDownErr) {
         promises.push(Promise.reject(tearDownErr));
       }
-    } else if (benchmark.startRunning) {
+    } else if (typeof benchmark.startRunning === 'function') {
       promises.push(benchmark.startRunning().then(() => {
         const Err = tearDownBenchmark(benchmark);
         if (Err) {

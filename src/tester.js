@@ -35,7 +35,7 @@ export function runBenchmarkTest(
     benchmark.setUp();
   }
 
-  if (!benchmark.run) {
+  if (typeof benchmark.run !== 'function') {
     throw new Error(`Benchmark "${name}" does not define a run function`);
   }
 
@@ -55,7 +55,7 @@ export function runBenchmarkTest(
 export function startBenchmarkTest(
   suite: Array<Benchmark>,
   name: string
-) : Promise {
+) : Promise<*> {
   const benchmark = findBenchmark(flatten(suite), name);
   if (!benchmark) {
     throw new Error(`Benchmark not found "${name}"`);
@@ -65,7 +65,7 @@ export function startBenchmarkTest(
     benchmark.setUp();
   }
 
-  if (!benchmark.startRunning) {
+  if (typeof benchmark.startRunning !== 'function') {
     throw new Error(`Benchmark "${name}" does not define a startRunning function`);
   }
 

@@ -7,7 +7,7 @@ import type {
 /**
  * Utility object to help debug node optimizations during measurement
  */
-export const DebugDimension: Dimension = {
+export const DebugDimension: Dimension<*> = {
   name: 'debug',
   displayName: 'debugging',
   units: '-',

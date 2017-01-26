@@ -7,7 +7,7 @@ import type {
 /**
  * Utility object describing how to measure memory
  */
-export const MemoryDimension: Dimension = {
+export const MemoryDimension: Dimension<*> = {
   name: 'memory',
   displayName: 'Memory',
   units: 'b',

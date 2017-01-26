@@ -7,7 +7,7 @@ import type {
 /**
  * Utility object describing how to measure time
  */
-export const TimeDimension: Dimension = {
+export const TimeDimension: Dimension<*> = {
   name: 'time',
   displayName: 'Elapsed Time',
   units: 'ns',
