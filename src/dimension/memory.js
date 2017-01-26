@@ -12,7 +12,7 @@ export const MemoryDimension: Dimension<*> = {
   displayName: 'Memory',
   units: 'b',
   startMeasuring: () => process.memoryUsage(),
-  stopMeasuring: startMemory => {
+  stopMeasuring: (startMemory) => {
     const memory = process.memoryUsage();
     return memory.heapUsed - startMemory.heapUsed;
   }

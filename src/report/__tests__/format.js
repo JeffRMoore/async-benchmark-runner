@@ -1,13 +1,12 @@
 
-jest.unmock('../format.js');
-
 import {
   formatLeft,
   formatRight
-} from '../format.js';
+} from '../format';
+
+jest.unmock('../format');
 
 describe('formatLeft', () => {
-
   it('pads a string to the requested length', () => {
     const expectedString = 'betty   ';
     const result = formatLeft('betty', expectedString.length);
@@ -33,11 +32,9 @@ describe('formatLeft', () => {
     const result = formatLeft(value, value.length);
     expect(result).toBe(value);
   });
-
 });
 
 describe('formatRight', () => {
-
   it('pads a string to the requested length', () => {
     const expectedString = '   betty';
     const result = formatRight('betty', expectedString.length);
@@ -63,5 +60,4 @@ describe('formatRight', () => {
     const result = formatRight(value, value.length);
     expect(result).toBe(value);
   });
-
 });

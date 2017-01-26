@@ -1,9 +1,10 @@
 /* @flow */
+
+import flatten from 'lodash.flatten';
+
 import type {
   Dimension
 } from './dimension/type';
-
-import flatten from 'lodash.flatten';
 
 /**
  * Describe a synchronous benchmark
@@ -149,7 +150,6 @@ function runBenchmark(
   benchmarkSuite: Array<Benchmark>,
   suiteResult: BenchmarkSuiteResult
 ) : void {
-
   const benchmark: Benchmark = benchmarkSuite.shift();
 
   // if there are no more benchmarks, stop
@@ -376,7 +376,6 @@ function stopMeasuring(
   endingMeasurements: Array<number>
 ): Array<number> {
   for (let i = dimensions.length - 1; i >= 0; i--) {
-
     /* eslint no-param-reassign:0 */
     endingMeasurements[i] =
       dimensions[i].stopMeasuring(startingMeasurements[i]);

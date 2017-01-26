@@ -17,6 +17,11 @@ export function marginOfError(samples: Array<number>) : number {
   const sampleMean = mean(samples);
   const standardError = standardDeviation(samples) / Math.sqrt(samples.length);
   const degreesOfFreedom = samples.length - 1;
-  const interval = confidenceIntervalForT(sampleMean, standardError, degreesOfFreedom, confidenceLevel);
-  return (interval[1] - sampleMean) / sampleMean * toPercent || 0;
+  const interval = confidenceIntervalForT(
+    sampleMean,
+    standardError,
+    degreesOfFreedom,
+    confidenceLevel
+  );
+  return (((interval[1] - sampleMean) / sampleMean) * toPercent) || 0;
 }

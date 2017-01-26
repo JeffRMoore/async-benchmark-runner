@@ -12,9 +12,9 @@ export const TimeDimension: Dimension<*> = {
   displayName: 'Elapsed Time',
   units: 'ns',
   startMeasuring: () => process.hrtime(),
-  stopMeasuring: startTime => {
+  stopMeasuring: (startTime) => {
     const nanoSecondsPerSecond = 1e9;
     const elapsed = process.hrtime(startTime);
-    return elapsed[0] * nanoSecondsPerSecond + elapsed[1];
+    return (elapsed[0] * nanoSecondsPerSecond) + elapsed[1];
   }
 };

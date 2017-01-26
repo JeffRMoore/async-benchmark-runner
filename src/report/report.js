@@ -1,4 +1,8 @@
 /* @flow */
+
+import {
+  mean
+} from 'simple-statistics';
 import {
   formatLeft,
   formatRight
@@ -9,9 +13,6 @@ import type {
 import {
   marginOfError
 } from './statistics';
-import {
-  mean
-} from 'simple-statistics';
 
 /**
  *
@@ -54,7 +55,7 @@ export function reportResult(
     '-'.repeat(timeColumnSize),
     '-'.repeat(memoryColumnSize)
   );
-  benchmarkResult.results.forEach(result => {
+  benchmarkResult.results.forEach((result) => {
     const time = Math.round(mean(result.samples.time));
     const timeMoe = Math.round(marginOfError(result.samples.time));
     const memory = Math.round(mean(result.samples.memory));

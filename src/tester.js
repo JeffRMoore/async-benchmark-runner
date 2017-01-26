@@ -1,11 +1,10 @@
 /* @flow */
 
+import flatten from 'lodash.flatten';
+
 import type {
   Benchmark
 } from './runner';
-
-import flatten from 'lodash.flatten';
-
 
 /**
  * Find a benchmark matching a given name
@@ -25,7 +24,6 @@ export function runBenchmarkTest(
   suite: Array<Benchmark>,
   name: string
 ) : any {
-
   const benchmark = findBenchmark(flatten(suite), name);
   if (!benchmark) {
     throw new Error(`Benchmark not found "${name}"`);
@@ -69,7 +67,7 @@ export function startBenchmarkTest(
     throw new Error(`Benchmark "${name}" does not define a startRunning function`);
   }
 
-  return benchmark.startRunning().then(result => {
+  return benchmark.startRunning().then((result) => {
     if (benchmark.tearDown) {
       benchmark.tearDown();
     }

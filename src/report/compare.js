@@ -1,17 +1,17 @@
 /* @flow */
 import {
+  mean
+} from 'simple-statistics';
+import {
+  tTest
+} from 'experiments.js';
+import {
   formatLeft,
   formatRight
 } from './format';
 import type {
   BenchmarkSuiteResult
 } from '../runner';
-import {
-  mean
-} from 'simple-statistics';
-import {
-  tTest
-} from 'experiments.js';
 
 const defaultSignificanceThreshold = 0.05;
 const defaultConfidenceLevel = 0.95;
@@ -95,9 +95,9 @@ export function compareMemoryResults(
       formatRight(memoryDifference, memorySize) +
       memoryUnits;
     const baseMean = mean(baseResult.results[i].samples.memory);
-    const change = Math.round(memory.meanDifference * toPercent / baseMean);
+    const change = Math.round((memory.meanDifference * toPercent) / baseMean);
     const interval = memory.confidenceInterval[1] - memory.meanDifference;
-    const marginOfError = Math.round(interval * toPercent / baseMean);
+    const marginOfError = Math.round((interval * toPercent) / baseMean);
     const changeColumn =
       formatRight(change, changeSize) +
       changeUnits +
@@ -106,7 +106,6 @@ export function compareMemoryResults(
       marginOfErrorUnits;
 
     outputFn(asyncColumn, benchmarkColumn, memoryColumn, changeColumn);
-
   }
 
   if (insignificantBenchmarks > 0) {
@@ -175,7 +174,6 @@ export function compareTimeResults(
 
   let insignificantBenchmarks = 0;
   for (let i = 0; i < baseResult.results.length; i++) {
-
     const time = tTest(
       baseResult.results[i].samples.time,
       testResult.results[i].samples.time,
@@ -197,9 +195,9 @@ export function compareTimeResults(
       formatRight(timeDifference, timeSize) +
       timeUnits;
     const baseMean = mean(baseResult.results[i].samples.time);
-    const change = Math.round(time.meanDifference * toPercent / baseMean);
+    const change = Math.round((time.meanDifference * toPercent) / baseMean);
     const interval = time.confidenceInterval[1] - time.meanDifference;
-    const marginOfError = Math.round(interval * toPercent / baseMean);
+    const marginOfError = Math.round((interval * toPercent) / baseMean);
     const changeColumn =
       formatRight(change, changeSize) +
       changeUnits +
