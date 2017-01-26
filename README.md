@@ -243,6 +243,10 @@ A benchmark suite is an array of benchmark definition objects.  A benchmark
 definition is a simple javascript object.  Here is an example of the simplest
 possible benchmark suite.
 
+```
+TODO
+```
+
 There are two types of benchmark, one for synchronous benchmarks and one for
 asynchronous benchmarks.  Both types share the following fields:
 
@@ -251,6 +255,24 @@ asynchronous benchmarks.  Both types share the following fields:
 | name | The name of the benchmark for reporting purposes.  This is required.  It must also be unique within a benchmark suite. |
 | setUp | An optional function which will be called prior to running the benchmark, outside of any measuring interval.  Use to initialize any data required during the benchmark run. |
 | tearDown | An optional function which will be called after the benchmark has completed running, outside of any measuring interval.  Use to free resources to make them available for other benchmarks. |
+
+Here is an example of a benchmark with setUp and tearDown
+
+```
+  {
+    name: 'example',
+    setUp: () => {
+      // TODO
+    },
+    tearDown: () => {
+      // TODO
+    },
+    startRunning: () => {
+      // TODO
+    }
+```
+
+This interface [may change](https://github.com/JeffRMoore/async-benchmark-runner/issues/7).
 
 ### Benchmarking overhead
 
