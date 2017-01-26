@@ -378,32 +378,6 @@ describe('NO-OP Asynchronous', () => {
 });
 ```
 
-## Roadmap / TODO
+## CRITICAL BUGS
 
-For next release
-- [critical] change algorithm to interleave sampling (large refactoring necessary for stability of results)
-- fix --expose-gc parameter for linux shebang issue
-
-Future
-- Help cli option
-- progress indicator
-- use this for benchmark state (class)
-- don't hardcode opsPerSample
-- don't hardccode numSamples
-- check for too much memory usage
-- add confidence level to non-compare reports
-- refactor stats to isolate dependencies
-- use destructuring for stats
-- extract MOE test code to stats
-- automatically add node cli parameter for --debug options
-- figure out why stdout flushes differently when piped
-- fix compare reports for added or removed benchmarks
-- write test cases
-- document using top -u -s 10 in "jitter"
-- add magnitude-threshold parameter
-- sort results by magnitude of change in comparison report
-- calibration parameter for comparison report
-- handle benchmarks that are expected to throw an error
-- use mode instead of mean to descibribe memory usage (remove MOE)
-- extract calibration benchmarks to their own module
-- debug detected inefficiency in babel compiled es6 code
+[CLI fails on Linux](https://github.com/JeffRMoore/async-benchmark-runner/issues/2)
