@@ -74,13 +74,15 @@ function stopMeasuring(
  *  Setup benchmark resources before running
  *  @TODO how to wait for an async setup?
  */
-export function setupBenchmark(benchmark: Benchmark): Error | false {
+export function setUpBenchmark(benchmark: Benchmark): Error | false {
   if (typeof benchmark.setUp === 'function') {
     try {
       benchmark.setUp();
     } catch (e) {
       return e;
     }
+  } else if (typeof benchmark.setUp !== 'undefined') {
+    return new Error('setUp must be either a function or undefined');
   }
   return false;
 }
@@ -96,6 +98,8 @@ export function tearDownBenchmark(benchmark: Benchmark): Error | false {
     } catch (e) {
       return e;
     }
+  } else if (typeof benchmark.tearDown !== 'undefined') {
+    return new Error('tearDown must be either a function or undefined');
   }
   return false;
 }
@@ -115,9 +119,9 @@ export function collectAsynchronousSample(
   const promises = new Array(opsPerSample);
   const ending = new Array(dimensions.length);
 
-  const ErrSetup = setupBenchmark(benchmark);
-  if (ErrSetup) {
-    reject(ErrSetup);
+  const setUpError = setUpBenchmark(benchmark);
+  if (setUpError) {
+    reject(setUpError);
     return;
   }
 
@@ -132,19 +136,22 @@ export function collectAsynchronousSample(
     }
   } catch (e) {
     reject(e);
+    return;
   }
 
   // take measurements when all promises have been resolved
   Promise.all(promises).then(() => {
     stopMeasuring(dimensions, starting, ending);
 
-    const ErrTearDown = tearDownBenchmark(benchmark);
-    if (ErrTearDown) {
-      reject(ErrTearDown);
+    const tearDownError = tearDownBenchmark(benchmark);
+    if (tearDownError) {
+      reject(tearDownError);
       return;
     }
 
     complete(ending);
+  }).catch((error) => {
+    reject(error);
   });
 }
 
@@ -162,9 +169,9 @@ export function collectSynchronousSample(
   // Pre-allocate to avoid allocating memory during run
   const ending = new Array(dimensions.length);
 
-  const ErrSetup = setupBenchmark(benchmark);
-  if (ErrSetup) {
-    reject(ErrSetup);
+  const setUpError = setUpBenchmark(benchmark);
+  if (setUpError) {
+    reject(setUpError);
     return;
   }
 
@@ -179,13 +186,14 @@ export function collectSynchronousSample(
     }
   } catch (e) {
     reject(e);
+    return;
   }
 
   stopMeasuring(dimensions, starting, ending);
 
-  const ErrTearDown = tearDownBenchmark(benchmark);
-  if (ErrTearDown) {
-    reject(ErrTearDown);
+  const tearDownError = tearDownBenchmark(benchmark);
+  if (tearDownError) {
+    reject(tearDownError);
     return;
   }
 

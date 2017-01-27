@@ -13,7 +13,7 @@ import type {
 import {
   collectSynchronousSample,
   collectAsynchronousSample,
-  setupBenchmark,
+  setUpBenchmark,
   tearDownBenchmark
 } from './sampler';
 
@@ -87,9 +87,9 @@ function populateInlineCaches(benchmarkSuite: Array<Benchmark>) {
   const promises = [];
   for (let i = 0; i < benchmarkSuite.length; i++) {
     const benchmark = benchmarkSuite[i];
-    const setupErr = setupBenchmark(benchmark);
-    if (setupErr) {
-      promises.push(Promise.reject(setupErr));
+    const setUpErr = setUpBenchmark(benchmark);
+    if (setUpErr) {
+      promises.push(Promise.reject(setUpErr));
     }
     if (typeof benchmark.run === 'function') {
       benchmark.run();
