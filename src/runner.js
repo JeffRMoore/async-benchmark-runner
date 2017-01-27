@@ -8,7 +8,7 @@ import type {
 
 import type {
   DimensionList
-} from './dimension/type';
+} from './dimension/list';
 
 import {
   collectSynchronousSample,

@@ -10,8 +10,3 @@ export type Dimension<T> = {
   startMeasuring: () => T;
   stopMeasuring: (start: T) => number;
 }
-
-/**
- * A list of dimensions to measure
- */
-export type DimensionList = Array<Dimension<*>>;

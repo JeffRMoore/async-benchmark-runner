@@ -1,7 +1,4 @@
 /* @flow */
-import type {
-  DimensionList
-} from './dimension/type';
 
 import type {
   ASynchronousBenchmark,
@@ -9,10 +6,12 @@ import type {
   Benchmark
 } from './benchmark';
 
-/**
- * A list of measurements corresponding to a list of dimensions
- */
-type Measurements = Array<number>;
+import {
+  startMeasuring,
+  stopMeasuring,
+  type Measurements,
+  type DimensionList
+} from './dimension/list';
 
 /**
  * Callback that is called with a Sample when benchmarking is complete
@@ -32,42 +31,6 @@ function cleanUpMemory() {
   if (global.gc) {
     global.gc();
   }
-}
-
-/**
- * Start measuring all requested dimensions in order
- * @param dimensions The dimensions to start measuring
- */
-function startMeasuring(dimensions: DimensionList): Measurements {
-  const startingMeasurements = new Array(dimensions.length);
-  for (let i = 0; i < dimensions.length; i++) {
-    startingMeasurements[i] = dimensions[i].startMeasuring();
-  }
-  return startingMeasurements;
-}
-
-/**
- * Take the final measurement of all requested dimensions in the reverse order
- * from which they were started.
- *
- * Receives a pre-allocated array to prevent need to allocate memory in this
- * function.
- *
- * @param dimensions The dimensions to stop measuring
- * @param startingMeasurements A list of starting measurement for each dimension
- * @param endingMeasurements A pre-allocated Array to record ending measuremsnts into
- * @returns endingMeasurements
- */
-function stopMeasuring(
-  dimensions: DimensionList,
-  startingMeasurements: Measurements,
-  endingMeasurements: Measurements
-): Measurements {
-  for (let i = dimensions.length - 1; i >= 0; i--) {
-    endingMeasurements[i] =
-      dimensions[i].stopMeasuring(startingMeasurements[i]);
-  }
-  return endingMeasurements;
 }
 
 /**

@@ -8,19 +8,15 @@ import {
 } from '../sampler';
 
 import type {
-  Dimension,
   DimensionList
 } from '../dimension/type';
 
+import {
+  FifthDimension
+} from '../dimension/fifth';
+
 describe('Sampling', () => {
-  const testDimension: Dimension<*> = {
-    name: 'test',
-    displayName: 'testing',
-    units: 'units',
-    startMeasuring: () => 1,
-    stopMeasuring: start => start + 1
-  };
-  const dimensions: DimensionList = [testDimension];
+  const dimensions: DimensionList = [FifthDimension];
 
   describe('a synchronous benchmark', () => {
     const syncBenchmark = {
@@ -40,7 +36,7 @@ describe('Sampling', () => {
         errorCallback
       );
       expect(errorCallback).not.toBeCalled();
-      expect(completedCallback).toBeCalledWith([2]);
+      expect(completedCallback).toBeCalledWith([5]);
     });
 
     describe('that does not define setUp or tearDown', () => {
@@ -167,7 +163,7 @@ describe('Sampling', () => {
           reject
         );
       });
-      return task.then(result => expect(result).toEqual([2]));
+      return task.then(result => expect(result).toEqual([5]));
     });
 
     describe('that does not define setUp or tearDown', () => {
@@ -242,7 +238,7 @@ describe('Sampling', () => {
             reject
           );
         });
-        return task.then(result => expect(result).toEqual([2]));
+        return task.then(result => expect(result).toEqual([5]));
       });
     });
 
