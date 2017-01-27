@@ -3,35 +3,19 @@
 import flatten from 'lodash.flatten';
 
 import type {
-  Dimension
+  Benchmark
+} from './benchmark';
+
+import type {
+  DimensionList
 } from './dimension/type';
 
-/**
- * Describe a synchronous benchmark
- */
-export type SynchronousBenchmark =
-{
-  name: string;
-  setUp?: () => void;
-  tearDown?: () => void;
-  run: () => any;
-}
-
-/**
- * Describe an asynchronous benchmark
- */
-export type ASynchronousBenchmark =
-{
-  name: string;
-  setUp?: () => void;
-  tearDown?: () => void;
-  startRunning : () => Promise<*>;
-}
-
-/**
- * Supported benchmarking styles
- */
-export type Benchmark = SynchronousBenchmark | ASynchronousBenchmark;
+import {
+  collectSynchronousSample,
+  collectAsynchronousSample,
+  setupBenchmark,
+  tearDownBenchmark
+} from './sampler';
 
 /**
  * A set of sample measurements
@@ -65,7 +49,7 @@ type resolveFn = (value: any) => void;
 
 type rejectFn = (value: any) => void;
 
-let dimensions: Array<Dimension<*>> = [];
+let dimensions: DimensionList = [];
 
 /**
  * Start the process of running a suite of benchmarks
@@ -73,7 +57,7 @@ let dimensions: Array<Dimension<*>> = [];
 export function startBenchmarking(
   name: string,
   benchmarkSuite: Array<Benchmark>,
-  dimensionList: Array<Dimension<*>>
+  dimensionList: DimensionList
 ) : Promise<*> {
   dimensions = dimensionList;
   return new Promise((resolve: resolveFn, reject: rejectFn) => {
@@ -186,20 +170,6 @@ function runBenchmark(
 }
 
 /**
- *  Setup benchmark resources before running
- */
-function setupBenchmark(benchmark: Benchmark): Error | false {
-  if (benchmark.setUp) {
-    try {
-      benchmark.setUp();
-    } catch (e) {
-      return e;
-    }
-  }
-  return false;
-}
-
-/**
  * Schedule sample collection
  */
 function scheduleNextSample(
@@ -215,18 +185,26 @@ function scheduleNextSample(
   if (benchmark.run) {
     setImmediate(
       collectSynchronousSample,
-      resolve,
-      reject,
       benchmark,
-      result
+      dimensions,
+      result.opsPerSample,
+      (finalMeasurements) => {
+        recordMeasurements(result, finalMeasurements);
+        scheduleNextSample(resolve, reject, benchmark, result);
+      },
+      reject
     );
   } else if (benchmark.startRunning) {
     setImmediate(
       collectAsynchronousSample,
-      resolve,
-      reject,
       benchmark,
-      result
+      dimensions,
+      result.opsPerSample,
+      (finalMeasurements) => {
+        recordMeasurements(result, finalMeasurements);
+        scheduleNextSample(resolve, reject, benchmark, result);
+      },
+      reject
     );
   } else {
     reject(new Error(
@@ -240,147 +218,6 @@ function scheduleNextSample(
  */
 function isSamplingComplete(result: BenchmarkResult) {
   return result.samples.time.length >= result.numSamples;
-}
-
-/**
- *  release benchmark resources after running
- */
-function tearDownBenchmark(benchmark: Benchmark): Error | false {
-  if (benchmark.tearDown) {
-    try {
-      benchmark.tearDown();
-    } catch (e) {
-      return e;
-    }
-  }
-  return false;
-}
-
-/**
- * Run an asynchronous benchmark for the desired number of operations and capture
- * the results
- */
-function collectAsynchronousSample(
-  resolve: resolveFn,
-  reject: rejectFn,
-  benchmark: ASynchronousBenchmark,
-  result: BenchmarkResult
-): void {
-  // Pre-allocate to avoid allocating memory during run
-  const promises = new Array(result.opsPerSample);
-  const ending = new Array(dimensions.length);
-
-  const ErrSetup = setupBenchmark(benchmark);
-  if (ErrSetup) {
-    reject(ErrSetup);
-    return;
-  }
-
-  cleanUpMemory();
-
-  const starting = startMeasuring();
-
-  try {
-    // run the benchmark function and collect promises
-    for (let i = 0; i < result.opsPerSample; i++) {
-      promises[i] = benchmark.startRunning();
-    }
-  } catch (e) {
-    reject(e);
-  }
-
-  // take measurements when all promises have been resolved
-  Promise.all(promises).then(() => {
-    recordMeasurements(result, stopMeasuring(starting, ending));
-
-    const ErrTearDown = tearDownBenchmark(benchmark);
-    if (ErrTearDown) {
-      reject(ErrTearDown);
-      return;
-    }
-
-    scheduleNextSample(resolve, reject, benchmark, result);
-  });
-}
-
-/**
- * Run a synchronous benchmark for the desired number of operations and capture
- * the results
- */
-function collectSynchronousSample(
-  resolve: resolveFn,
-  reject: rejectFn,
-  benchmark: SynchronousBenchmark,
-  result: BenchmarkResult
-) {
-  // Pre-allocate to avoid allocating memory during run
-  const ending = new Array(dimensions.length);
-
-  const ErrSetup = setupBenchmark(benchmark);
-  if (ErrSetup) {
-    reject(ErrSetup);
-    return;
-  }
-
-  cleanUpMemory();
-
-  const starting = startMeasuring();
-
-  try {
-    // run the benchmark function
-    for (let i = 0; i < result.opsPerSample; i++) {
-      benchmark.run();
-    }
-  } catch (e) {
-    reject(e);
-  }
-
-  recordMeasurements(result, stopMeasuring(starting, ending));
-
-  const ErrTearDown = tearDownBenchmark(benchmark);
-  if (ErrTearDown) {
-    reject(ErrTearDown);
-    return;
-  }
-
-  scheduleNextSample(resolve, reject, benchmark, result);
-}
-
-/**
- * Put memory into a stable state if we can to avoid triggering gc during a
- * sample run
- */
-function cleanUpMemory() {
-  if (global.gc) {
-    global.gc();
-  }
-}
-
-/**
- * Start measuring all requested dimensions in order
- */
-function startMeasuring(): any {
-  const startingMeasurements = new Array(dimensions.length);
-  for (let i = 0; i < dimensions.length; i++) {
-    startingMeasurements[i] = dimensions[i].startMeasuring();
-  }
-  return startingMeasurements;
-}
-
-/**
- * Take the final measurement of all requested dimensions in the reverse order
- * from which they were started.
- */
-function stopMeasuring(
-  startingMeasurements: Array<any>,
-  endingMeasurements: Array<number>
-): Array<number> {
-  for (let i = dimensions.length - 1; i >= 0; i--) {
-    /* eslint no-param-reassign:0 */
-    endingMeasurements[i] =
-      dimensions[i].stopMeasuring(startingMeasurements[i]);
-  }
-  return endingMeasurements;
 }
 
 /**

@@ -4,7 +4,7 @@ import flatten from 'lodash.flatten';
 
 import type {
   Benchmark
-} from './runner';
+} from './benchmark';
 
 /**
  * Find a benchmark matching a given name
