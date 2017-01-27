@@ -9,7 +9,7 @@ import {
 } from './format';
 import type {
   BenchmarkSuiteResult
-} from '../runner';
+} from '../benchmark';
 import {
   marginOfError
 } from './statistics';

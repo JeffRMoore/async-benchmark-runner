@@ -11,7 +11,7 @@ import {
 } from './format';
 import type {
   BenchmarkSuiteResult
-} from '../runner';
+} from '../benchmark';
 
 const defaultSignificanceThreshold = 0.05;
 const defaultConfidenceLevel = 0.95;
