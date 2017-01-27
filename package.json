@@ -18,10 +18,10 @@
     ]
   },
   "scripts": {
-    "test": "npm run lint && npm run check && npm run testonly",
-    "testonly": "jest",
+    "test": "npm run lint && npm run typecheck && npm run unit-tests",
+    "unit-tests": "jest",
     "lint": "eslint src",
-    "check": "flow check",
+    "typecheck": "flow check",
     "build": "babel src --ignore __tests__ --out-dir dist/src && cp package.json dist/ && mkdir -p dist/bin && cp bin/analyze-benchmark dist/bin && cp bin/run-benchmark dist/bin"
   },
   "bin": {
