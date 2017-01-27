@@ -373,9 +373,8 @@ developing code in the system under test.  Tools that improve the interactivity
 
 ## Testing your Benchmarks
 
-See Dick run.  See Dick run to Jane's desk claiming amazing performance
-improvements.  See Dick's face turn red when Jane points out that his
-benchmark is broken.  Don't be Dick.  Unit test your benchmarks.
+Benchmark code can have errors, too, especially when the output is not 
+visible.  Unit test your benchmarks.
 
 ABR provides helper functions for testing your benchmarks. The
 `runBenchmarkTest` function accepts a list of benchmarks and a benchmark
