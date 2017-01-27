@@ -50,7 +50,7 @@ function startMeasuring(dimensions: DimensionList): Measurements {
  * Take the final measurement of all requested dimensions in the reverse order
  * from which they were started.
  *
- * Receieves a pre-allocated array to prevent need to allocate memory in this
+ * Receives a pre-allocated array to prevent need to allocate memory in this
  * function.
  *
  * @param dimensions The dimensions to stop measuring
@@ -64,7 +64,6 @@ function stopMeasuring(
   endingMeasurements: Measurements
 ): Measurements {
   for (let i = dimensions.length - 1; i >= 0; i--) {
-    /* eslint no-param-reassign:0 */
     endingMeasurements[i] =
       dimensions[i].stopMeasuring(startingMeasurements[i]);
   }
