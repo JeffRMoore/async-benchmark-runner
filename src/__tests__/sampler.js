@@ -1,4 +1,4 @@
-
+/* Intentionally no Flow, some test case intantionally test bad type inputs */
 
 import {
   setUpBenchmark,
@@ -8,8 +8,13 @@ import {
 } from '../sampler';
 
 import type {
+  ASynchronousBenchmark,
+  SynchronousBenchmark
+} from '../benchmark';
+
+import type {
   DimensionList
-} from '../dimension/type';
+} from '../dimension/list';
 
 import {
   FifthDimension
@@ -19,7 +24,7 @@ describe('Sampling', () => {
   const dimensions: DimensionList = [FifthDimension];
 
   describe('a synchronous benchmark', () => {
-    const syncBenchmark = {
+    const syncBenchmark: SynchronousBenchmark = {
       name: 'test',
       run: () => false
     };
@@ -50,7 +55,7 @@ describe('Sampling', () => {
     });
 
     describe('that defines a setUp and tearDown', () => {
-      const syncBenchmarkWithSetup = {
+      const syncBenchmarkWithSetup: SynchronousBenchmark = {
         name: 'test',
         setUp: jest.fn(),
         run: () => false,
@@ -71,7 +76,7 @@ describe('Sampling', () => {
     });
 
     describe('that defines a setUp with an error', () => {
-      const syncBenchmarkWithSetUpError = {
+      const syncBenchmarkWithSetUpError: SynchronousBenchmark = {
         name: 'test',
         setUp: () => {
           throw new Error('Oops');
@@ -85,7 +90,7 @@ describe('Sampling', () => {
     });
 
     describe('that defines a setUp that is not a function', () => {
-      const syncBenchmarkWithSetUpNotFunction = {
+      const syncBenchmarkWithSetUpNotFunction: SynchronousBenchmark = {
         name: 'test',
         setUp: false,
         run: () => false,
@@ -97,7 +102,7 @@ describe('Sampling', () => {
     });
 
     describe('that defines a tearDown with an error', () => {
-      const syncBenchmarkWithTearDownError = {
+      const syncBenchmarkWithTearDownError: SynchronousBenchmark = {
         name: 'test',
         run: () => false,
         tearDown: () => {
@@ -111,7 +116,7 @@ describe('Sampling', () => {
     });
 
     describe('that defines a tearDown that is not a function', () => {
-      const syncBenchmarkWithTearDownNotFunction = {
+      const syncBenchmarkWithTearDownNotFunction: SynchronousBenchmark = {
         name: 'test',
         run: () => false,
         tearDown: false,
@@ -123,7 +128,7 @@ describe('Sampling', () => {
     });
 
     describe('with an error', () => {
-      const syncBenchmarkWithError = {
+      const syncBenchmarkWithError: SynchronousBenchmark = {
         name: 'test',
         run: () => {
           throw new Error('Oops');
@@ -148,7 +153,7 @@ describe('Sampling', () => {
   });
 
   describe('an asynchronous benchmark', () => {
-    const asyncBenchmark = {
+    const asyncBenchmark: ASynchronousBenchmark = {
       name: 'test',
       startRunning: () => Promise.resolve(false)
     };
@@ -177,7 +182,7 @@ describe('Sampling', () => {
     });
 
     describe('that defines a setUp with an error', () => {
-      const asyncBenchmarkSetUpError = {
+      const asyncBenchmarkSetUpError: ASynchronousBenchmark = {
         name: 'test',
         setUp: () => {
           throw new Error('Oops');
@@ -200,7 +205,7 @@ describe('Sampling', () => {
     });
 
     describe('that defines a tearDown with an error', () => {
-      const asyncBenchmarkTearDownError = {
+      const asyncBenchmarkTearDownError: ASynchronousBenchmark = {
         name: 'test',
         startRunning: () => true,
         tearDown: () => {
@@ -223,7 +228,7 @@ describe('Sampling', () => {
     });
 
     describe('that does not return a promise', () => {
-      const asyncBenchmarkNoPromise = {
+      const asyncBenchmarkNoPromise: ASynchronousBenchmark = {
         name: 'test',
         startRunning: () => true
       };
@@ -243,7 +248,7 @@ describe('Sampling', () => {
     });
 
     describe('that throws an error', () => {
-      const asyncBenchmarkThrowsError = {
+      const asyncBenchmarkThrowsError: ASynchronousBenchmark = {
         name: 'test',
         startRunning: () => {
           throw new Error('Oops');
@@ -265,7 +270,7 @@ describe('Sampling', () => {
     });
 
     describe('that rejects a promise', () => {
-      const asyncBenchmarkRejected = {
+      const asyncBenchmarkRejected: ASynchronousBenchmark = {
         name: 'test',
         startRunning: () => Promise.reject('Oops')
       };

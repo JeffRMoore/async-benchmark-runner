@@ -7,15 +7,14 @@ import type {
 /**
  * Utility object to help debug node optimizations during measurement
  */
-export const DebugDimension: Dimension<*> = {
+export const DebugDimension: Dimension<void> = {
   name: 'debug',
   displayName: 'debugging',
   units: '-',
-  startMeasuring: () => {
+  startMeasuring: (): void => {
     process.stdout.write('[[[ START measuring --');
-    return 0;
   },
-  stopMeasuring: () => {
+  stopMeasuring: (): number => {
     process.stdout.write('-- STOP measuring ]]]\n');
     return 0;
   }
