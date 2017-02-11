@@ -23,7 +23,7 @@ function findBenchmark(
 export function runBenchmarkTest(
   suite: Array<Benchmark>,
   name: string
-) : any {
+): any {
   const benchmark = findBenchmark(flatten(suite), name);
   if (!benchmark) {
     throw new Error(`Benchmark not found "${name}"`);
@@ -53,7 +53,7 @@ export function runBenchmarkTest(
 export function startBenchmarkTest(
   suite: Array<Benchmark>,
   name: string
-) : Promise<*> {
+): Promise<*> {
   const benchmark = findBenchmark(flatten(suite), name);
   if (!benchmark) {
     throw new Error(`Benchmark not found "${name}"`);

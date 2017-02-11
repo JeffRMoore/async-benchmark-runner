@@ -19,7 +19,7 @@ export type ASynchronousBenchmark =
     name: string;
     setUp?: () => void;
     tearDown?: () => void;
-    startRunning : () => Promise<*>;
+    startRunning: () => Promise<*>;
   }
 
 /**
@@ -41,7 +41,7 @@ export type BenchmarkResult =
     isAsynchronous: boolean;
     opsPerSample: number;
     numSamples: number;
-    samples: { [measurementName: string] : Samples };
+    samples: { [measurementName: string]: Samples };
   }
 
 /**

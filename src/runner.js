@@ -27,7 +27,7 @@ export function startBenchmarking(
   name: string,
   benchmarkSuite: Array<Benchmark>,
   dimensionList: DimensionList
-) : Promise<*> {
+): Promise<*> {
   setDimensionList(dimensionList);
   return new Promise((resolve, reject) => {
     const suiteResult : BenchmarkSuiteResult = {

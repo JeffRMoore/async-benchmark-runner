@@ -33,7 +33,7 @@ export function scheduleNextBenchmark(
   reject: rejectFn,
   benchmarkSuite: Array<Benchmark>,
   suiteResult: BenchmarkSuiteResult
-) : void {
+): void {
   setImmediate(runBenchmark, resolve, reject, benchmarkSuite, suiteResult);
 }
 
@@ -45,7 +45,7 @@ function runBenchmark(
   reject: rejectFn,
   benchmarkSuite: Array<Benchmark>,
   suiteResult: BenchmarkSuiteResult
-) : void {
+): void {
   const benchmark: Benchmark = benchmarkSuite.shift();
 
   // if there are no more benchmarks, stop
